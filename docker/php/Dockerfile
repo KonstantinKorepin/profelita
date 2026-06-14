@@ -1,5 +1,7 @@
 FROM php:8.2-fpm
 
+ARG UID=1000
+
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
@@ -26,6 +28,10 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+RUN usermod -u ${UID} www-data && groupmod -g ${UID} www-data \
+    && mkdir -p /var/www/.composer \
+    && chown -R www-data:www-data /var/www
 
 WORKDIR /app
 

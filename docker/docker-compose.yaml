@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: php/Dockerfile
+      args:
+        UID: ${UID:-1000}
     container_name: profelita-php
     restart: unless-stopped
     working_dir: /app
