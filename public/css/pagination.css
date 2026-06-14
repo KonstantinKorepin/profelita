@@ -1,0 +1,42 @@
+/** Стили для пагинации **/
+
+ul.pagination {
+    justify-content: center;
+}
+
+ul.pagination li {
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+}
+
+ul.pagination li span,
+ul.pagination li a
+{
+    font-size: 20px;
+    display: inline-block;
+}
+
+ul.pagination li span {
+    padding: 5px 5px;
+}
+
+ul.pagination li a {
+    padding: 5px 10px;
+}
+
+ul.pagination li span[aria-hidden="true"] {
+   font-size: 40px;
+}
+
+ul.pagination li a {
+    background: #09476f;
+    color: #ffffff;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+ul.pagination li a:hover {
+    background: #2075ac;
+}
+

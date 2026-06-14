@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /assets/adminlte/dist/*.*
+Allow: /css/*.*
+Allow: /docs/*.*
+Allow: /fonts/*.*
+Allow: /images/*.*
+Allow: /js/*.*
+Allow: /storage/*.*
+
+Disallow: /enter
+Disallow: /exit
+Disallow: /*?page=
+
+Sitemap: https://profelita.ru/sitemap_cities.xml
+Sitemap: https://profelita.ru/sitemap_masters.xml
+Sitemap: https://profelita.ru/sitemap_pages.xml
+Sitemap: https://profelita.ru/sitemap_services.xml

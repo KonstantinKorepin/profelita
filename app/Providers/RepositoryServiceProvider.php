@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Providers;
+
+use App\Repositories\CityRepository;
+use App\Repositories\Interfaces\CityRepositoryInterface;
+use App\Repositories\Interfaces\MasterRepositoryInterface;
+use App\Repositories\Interfaces\ReviewRepositoryInterface;
+use App\Repositories\Interfaces\ServiceRepositoryInterface;
+use App\Repositories\MasterRepository;
+use App\Repositories\ReviewRepository;
+use App\Repositories\ServiceRepository;
+use Illuminate\Support\ServiceProvider;
+
+class RepositoryServiceProvider extends ServiceProvider
+{
+    /**
+     * Register services.
+     */
+    public function register(): void
+    {
+        $this->app->bind(ReviewRepositoryInterface::class, ReviewRepository::class);
+        $this->app->bind(MasterRepositoryInterface::class, MasterRepository::class);
+        $this->app->bind(CityRepositoryInterface::class, CityRepository::class);
+        $this->app->bind(ServiceRepositoryInterface::class, ServiceRepository::class);
+    }
+
+    /**
+     * Bootstrap services.
+     */
+    public function boot(): void
+    {
+        //
+    }
+}

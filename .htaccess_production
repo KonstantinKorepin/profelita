@@ -1,0 +1,13 @@
+RewriteEngine On
+RewriteRule (.*) public/$1
+
+Options +FollowSymLinks
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} !^profelita\.ru$ [NC]
+RewriteRule ^(.*)$ https://profelita.ru/$1 [R=301]
+ 
+# переадресация с http на https
+RewriteCond %{HTTP:X-HTTPS} !1
+RewriteCond %{HTTPS} =off
+RewriteRule ^(.*)$ https://profelita.ru/$1 [R=301,L]

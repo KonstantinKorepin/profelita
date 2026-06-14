@@ -1,0 +1,171 @@
+/*! Блок с большой картинкой(сервис) */
+.big-image-block-service {
+  margin-top: 10px
+}
+.big-image-block-service .big-image {
+  background: url(../images/big-image-service.jpg) no-repeat
+}
+.big-image-block-service .big-image-wrapper {
+  background: url(../images/master-back.png) no-repeat 100% 0;
+  height: 400px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 100%;
+  flex: 0 0 100%;
+  border-bottom: 3px solid #f6be65
+}
+.big-image-block-service .big-image .left {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 60%;
+  flex: 0 0 60%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center
+}
+.big-image-block-service .big-image .left .left-wrapper{
+  width: 90%;
+  margin: 0 auto
+}
+.big-image-block-service .big-image h1,
+.big-image-block-service .big-image .small-text
+{
+  color: #ffffff
+}
+.big-image-block-service .big-image h1 {
+  font-size: 45px
+}
+.big-image-block-service .big-image .small-text
+{
+  font-size: 24px
+}
+.big-image-block-service .phone {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 100%;
+  flex: 0 0 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row
+}
+.big-image-block-service .phone .text a
+{
+  font-size: 35px;
+  color: #f6be65
+}
+.big-image-block-service .phone .text a:hover {
+  text-decoration: none;
+  border-bottom: 2px dashed #f6be65
+}
+.big-image-block-service .image {
+  padding-right: 15px
+}
+.big-image-block-service .call-form-block .form form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 100%;
+  flex: 0 0 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around
+}
+.big-image-block-service .call-form-block {
+  background: #ffffff;
+  border-radius: 5px;
+  width:  80%;
+  margin: 25px 0 0 0;
+  padding: 5px 0
+}
+.big-image-block-service .call-form-block .form input[type="text"] {
+  background: transparent;
+  border: none;
+  font-size:  20px;
+}
+.big-image-block-service .call-form-block .form input[type="submit"] {
+  background: #f6be66;
+  border: none;
+  border-radius: 5px;
+  color: #09476f;
+  padding: 10px 20px;
+  font-size: 20px
+}
+.big-image-block-service .call-form-block .form input[type="submit"]:hover {
+  background: #09476f;
+  color: #f6be66
+}
+@media screen and (max-width: 1024px) {
+  .big-image-block-service .big-image-wrapper {
+    background: none
+  }
+
+  .big-image-block-service .big-image .left,
+  .big-image-block-service .big-image .left .left-wrapper {
+    width: 100%;
+    margin: 0 auto
+  }
+
+  .big-image-block-service .call-form-block {
+    width:  100%
+  }
+}
+@media screen and (max-width: 991px) {
+  .big-image-block-service .big-image h1 {
+      font-size: 45px;
+      line-height: 40px;
+  }
+}
+@media screen and (max-width: 576px) {
+  .big-image-block-service .big-image h1 {
+      font-size: 36px;
+      line-height: 36px
+  }
+  .big-image-block-service{
+    width: 95%;
+    margin: 0 auto
+  }
+  .big-image-block-service .big-image .small-text {
+    font-size: 20px
+  }
+  .big-image-block-service .phone .text a {
+    font-size: 30px
+  }
+  .big-image-block-service .big-image .left .left-wrapper {
+    width: 95%;
+    margin: 0 auto
+  }
+  .big-image-block-service .big-image .left {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex
+  }
+  .big-image-block-service .call-form-block .form input[type="submit"] {
+    padding: 10px 10px;
+    font-size: 18px
+  }
+}
+@media screen and (max-width: 480px) {
+  .big-image-block-service .call-form-block .form input[type="text"] {
+    width:  150px
+  }
+}
+@media screen and (max-width: 380px) {
+  .big-image-block-service .call-form-block .form input[type="submit"] {
+    font-size:  14px
+  }
+}

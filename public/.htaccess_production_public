@@ -1,0 +1,113 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+Options +FollowSymLinks
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} !^profelita\.ru$ [NC]
+RewriteRule ^(.*)$ https://profelita.ru/$1 [R=301]
+
+# переадресация с http на https
+RewriteCond %{HTTP:X-HTTPS} !1
+RewriteCond %{HTTPS} =off
+#RewriteCond %{HTTP_HOST} ^profelita\.ru$
+RewriteRule ^(.*)$ https://profelita.ru/$1 [R=301,L]
+
+
+# редирект с index.php на конце
+RewriteCond %{THE_REQUEST} ^.*/index\.php
+RewriteRule ^(.*)index.php$ https://profelita.ru/$1 [R=301,L]
+
+Redirect 301 /msk /
+
+# Казань
+Redirect 301 /ustanovka-vanny-v-kazani /santexnik-kazan
+Redirect 301 /ustanovka-radiatora-otopleniia-v-kazani /santexnik-kazan
+Redirect 301 /ustanovka-dusevoi-kabiny-v-kazani /santexnik-kazan
+Redirect 301 /ustanovka-sarovyx-kranov-v-kazani /santexnik-kazan
+Redirect 301 /montaz-trub-vodosnabzeniia-v-kazani /santexnik-kazan
+Redirect 301 /montaz-kanalizacionnyx-trub-v-kazani /santexnik-kazan
+Redirect 301 /ustanovka-bide-v-kazani /santexnik-kazan
+Redirect 301 /ustanovka-installiacii-unitaza-v-kazani /santexnik-kazan
+Redirect 301 /ustanovka-dzakuzi-v-kazani /santexnik-kazan
+Redirect 301 /ustanovka-moidodyra-v-kazani /santexnik-kazan
+Redirect 301 /ustanovka-dusevogo-ugolka-v-kazani /santexnik-kazan
+Redirect 301 /zamena-vanny-v-kazani /santexnik-kazan
+Redirect 301 /zamena-radiatora-otopleniia-v-kazani /santexnik-kazan
+Redirect 301 /zamena-dusevoi-kabiny-v-kazani /santexnik-kazan
+Redirect 301 /zamena-polotencesusitelia-v-kazani /santexnik-kazan
+Redirect 301 /zamena-sarovyx-kranov-v-kazani /santexnik-kazan
+Redirect 301 /zamena-trub-vodosnabzeniia-v-kazani /santexnik-kazan
+Redirect 301 /zamena-kanalizacionnyx-trub-v-kazani /santexnik-kazan
+Redirect 301 /zamena-backa-unitaza-v-kazani /santexnik-kazan
+Redirect 301 /zamena-sliva-v-kazani /santexnik-kazan
+Redirect 301 /zamena-krana-buksy-v-kazani /santexnik-kazan
+Redirect 301 /zamena-kartridza-v-kazani /santexnik-kazan
+Redirect 301 /zamena-gofry-unitaza-v-kazani /santexnik-kazan
+Redirect 301 /zamena-armatury-backa-unitaza-v-kazani /santexnik-kazan
+Redirect 301 /remont-unitaza-v-kazani /santexnik-kazan
+Redirect 301 /remont-vanny-unitaza-v-kazani /santexnik-kazan
+Redirect 301 /remont-rakoviny-v-kazani /santexnik-kazan
+Redirect 301 /remont-radiatora-otopleniia-v-kazani /santexnik-kazan
+Redirect 301 /remont-dusevoi-kabiny-v-kazani /santexnik-kazan
+Redirect 301 /remont-polotencesusitelia-v-kazani /santexnik-kazan
+Redirect 301 /remont-sarovyx-kranov-v-kazani /santexnik-kazan
+Redirect 301 /remont-trub-vodosnabzeniia-v-kazani /santexnik-kazan
+Redirect 301 /remont-kanalizacionnyx-trub-v-kazani /santexnik-kazan
+Redirect 301 /remont-bide-v-kazani /santexnik-kazan
+Redirect 301 /remont-installiacii-unitaza-v-kazani /santexnik-kazan
+Redirect 301 /remont-dzakuzi-v-kazani /santexnik-kazan
+Redirect 301 /remont-trub-otopleniia-v-kazani /santexnik-kazan
+Redirect 301 /germetizaciia-svov-v-vannoi-v-kazani /santexnik-kazan
+Redirect 301 /ustranenie-zasorov-kanalizacii-v-kazani /santexnik-kazan
+Redirect 301 /ustranenie-zasora-v-vannoi-v-kazani /santexnik-kazan
+Redirect 301 /ustranenie-zasora-v-dusevoi-kabine-v-kazani /santexnik-kazan
+Redirect 301 /ustranenie-zasora-v-rakovine-v-kazani /santexnik-kazan
+Redirect 301 /ustranenie-zasora-na-kuxne-v-kazani /santexnik-kazan
+Redirect 301 /ustranenie-zasora-unitaza-v-kazani /santexnik-kazan
+Redirect 301 /ustranenie-zasorov-gidrodinamiceskim-sposobom-v-kazani /santexnik-kazan
+Redirect 301 /ustranenie-zasorov-mexaniceskim-sposobom-v-kazani /santexnik-kazan
+
+# Ульяновск(из-за внешней ссылки нужно оставить)
+Redirect 301 /santexnik-v-ulianovske /uslugi-santexnik-ulyanovsk
+Redirect 301 /santexnik-ulyanovsk /uslugi-santexnik-ulyanovsk
+
+Redirect 301 /santexnik-abakan /uslugi-santexnik-abakan
+Redirect 301 /santexnik-arzamas /uslugi-santexnik-arzamas
+Redirect 301 /santexnik-armavir /uslugi-santexnik-armavir
+Redirect 301 /santexnik-angarsk /uslugi-santexnik-angarsk
+Redirect 301 /santexnik-achinsk /uslugi-santexnik-achinsk
+Redirect 301 /santexnik-balakovo /uslugi-santexnik-balakovo
+Redirect 301 /santexnik-berdsk /uslugi-santexnik-berdsk
+Redirect 301 /santexnik-dimitrovgrad /uslugi-santexnik-dimitrovgrad
+Redirect 301 /santexnik-evpatoriya /uslugi-santexnik-evpatoriya
+Redirect 301 /santexnik-zlatoust /uslugi-santexnik-zlatoust
+Redirect 301 /santexnik-joshkar-ola /uslugi-santexnik-joshkar-ola
+Redirect 301 /santexnik-kerch /uslugi-santexnik-kerch
+Redirect 301 /santexnik-kovrov /uslugi-santexnik-kovrov
+Redirect 301 /santexnik-kopeysk /uslugi-santexnik-kopeysk
+Redirect 301 /santexnik-murom /uslugi-santexnik-murom
+Redirect 301 /santexnik-pskov /uslugi-santexnik-pskov
+Redirect 301 /santexnik-nefteyugansk /uslugi-santexnik-nefteyugansk
+Redirect 301 /santexnik-nijnekamsk /uslugi-santexnik-nijnekamsk
+Redirect 301 /santexnik-novocherkassk /uslugi-santexnik-novocherkassk
+Redirect 301 /santexnik-noviy-urengoy /uslugi-santexnik-noviy-urengoy
+Redirect 301 /santexnik-nijnevartovsk /uslugi-santexnik-nijnevartovsk
