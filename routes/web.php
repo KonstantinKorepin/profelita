@@ -54,8 +54,5 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function(){
 Route::fallback(function (PageService $service) {
     $service->updateSimplePageSessionData();
     $data = $service->getPageData(request()->path());
-    if (is_null($data)) {
-        throw new NotFoundHttpException();
-    }
     return view($data['template'], ['data' => $data['data']]);
 });
