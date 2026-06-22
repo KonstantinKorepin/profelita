@@ -3,9 +3,11 @@
 namespace App\Repositories;
 
 use App\Models\Url;
-use App\Repositories\Interfaces\ServiceRepositoryInterface;
+use App\Models\Master;
+use App\Models\Service;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\Interfaces\ServiceRepositoryInterface;
 
 class ServiceRepository implements ServiceRepositoryInterface
 {
@@ -34,4 +36,13 @@ class ServiceRepository implements ServiceRepositoryInterface
             ->get();
     }
 
+    /**
+     * Услуга
+     * @param int $serviceId
+     * @return Service
+     */
+    public function getOne(int $serviceId): Master
+    {
+        return Service::findOrFail($serviceId);
+    }
 }
