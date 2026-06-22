@@ -5,7 +5,7 @@ namespace App\Services;
 class StringHelper
 {
     /**
-     * возвращает строку без лишних пробелов и переносов строк
+     * Возвращает строку без лишних пробелов и переносов строк
      * @param $string
      * @return array|string|string[]
      */
@@ -14,5 +14,15 @@ class StringHelper
         $string = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $string);
         $string = str_replace(["\r\n", "\r", "\n", "\t", '  ', '    ', '    '], '', $string);
         return $string;
+    }
+
+    /**
+     * Возвращает номер телефона без пробелов и тире
+     * @param $phone
+     * @return array|string|string[]|null
+     */
+    public static function getClearPhone($phone)
+    {
+        return preg_replace('/[\s-]/', '', $phone);
     }
 }

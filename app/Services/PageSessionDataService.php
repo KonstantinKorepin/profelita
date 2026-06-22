@@ -19,12 +19,21 @@ class PageSessionDataService
         private ServiceSessionStrategy $serviceSessionStrategy,
     ){}
 
+    /**
+     * Обновляет статичные страницы
+     * @return void
+     */
     public function updateSimplePageSessionData(): void
     {
         $sessionDto = $this->sessionRepository->getDataBySession();
         $this->updateSessionData($sessionDto->getCity(), $sessionDto->getMaster());
     }
 
+    /**
+     * Обновляет динамические страницы
+     * @param string $url
+     * @return void
+     */
     public function updateDynamicPageSessionData(string $url): void
     {
         if ($url === route('main')) {
@@ -46,6 +55,12 @@ class PageSessionDataService
         }
     }
 
+    /**
+     * Обновляет массив сессии
+     * @param City $city
+     * @param Master $master
+     * @return void
+     */
     private function updateSessionData(City $city, Master $master): void
     {
         session([
@@ -55,7 +70,7 @@ class PageSessionDataService
             'phone' => $master->phone,
             'specializationCode' => $master->specialization->code,
             'address' => $master->address ?? config('app.default_address'),
-            'phoneNumber' => preg_replace('/[\s-]/', '', $master->phone),
+            'phoneNumber' => StringHelper::getClearPhone($master->phone),
             'starWorkingHours' => $master->start_working_hours,
             'endWorkingHours' => $master->end_working_hours,
             'cityUrl' => ($city->code != config('app.main_city_code')) ? $city->code : route('main'),
