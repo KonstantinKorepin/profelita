@@ -7,6 +7,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserController;
 use App\Models\City;
 use App\Services\PageService;
+use App\Services\PageSessionDataService;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -28,15 +29,12 @@ Route::get('/', function (PageService $service) {
 })->name('main');
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
-//Route::get('/city', [PageController::class, 'city'])->name('city');
 Route::get('/contacts', [PageController::class, 'contacts'])->name('contacts');
 Route::get('/geography', [PageController::class, 'geography'])->name('geography');
-//Route::get('/master', [PageController::class, 'master'])->name('master');
 Route::get('/guarantee', [PageController::class, 'guarantee'])->name('guarantee');
 Route::get('/masters', [PageController::class, 'masters'])->name('masters');
 Route::get('/partner', [PageController::class, 'partner'])->name('partner');
 Route::get('/reviews', [PageController::class, 'reviews'])->name('reviews');
-//Route::get('/service', [PageController::class, 'service'])->name('service');
 Route::post('/send-mail', [SendMailController::class, 'sendMail'])->name('sendMail');
 
 Route::group(['middleware' => 'guest'], function() {
@@ -51,8 +49,7 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function(){
     Route::resource('/masters', MasterController::class);
 });
 
-Route::fallback(function (PageService $service) {
-    $service->updateSimplePageSessionData();
+Route::fallback(function (PageService $service, PageSessionDataService $sessionDataService) {
     $data = $service->getPageData(request()->path());
     return view($data['template'], ['data' => $data['data']]);
 });

@@ -5,7 +5,7 @@ namespace App\Services\Seo;
 class SeoService
 {
     /**
-     * возвращает данные метатегов для страниц
+     * Возвращает данные метатегов для страниц
      * @param string $url
      * @return SeoTagInterface
      */
@@ -15,5 +15,4 @@ class SeoService
         $seoTag = $factory->create($url);
         return $seoTag;
     }
-
 }
