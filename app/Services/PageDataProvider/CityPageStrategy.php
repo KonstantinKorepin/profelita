@@ -8,31 +8,23 @@ use App\Models\Url;
 use App\Services\MasterService;
 use Illuminate\Support\Facades\DB;
 
-class CityPageDataProvider extends PageDataProvider implements PageDataProviderInterface
+class CityPageStrategy implements PageDataStrategyInterface
 {
-    private MasterService $masterService;
+    public function __construct(
+        private MasterService $masterService
+    ) {}
 
-    public function __construct(Url $url)
+    public function getData(Url $url): array
     {
-        parent::__construct($url);
-        $this->masterService = new MasterService();
-    }
+        $city = City::find($url->entity_id);
+        $master = Master::find($url->master_id);
 
-    /**
-     * Возвращает информацию по городу
-     * @return array
-     */
-    public function getData(): array
-    {
         $data['template'] = 'pages.city';
-        $city = City::whereId($this->url->entity_id)->get()->first();
-        $master = Master::whereId($this->url->master_id)->get()->first();
-
         $data['data'] = [
             'city' => $city,
             'masters' => $this->masterService->getFrontMasters(),
             'master' => $master,
-            'map' => isset($master->map) ? $master->map : null
+            'map' => $master->map ?? null
         ];
 
         $sql = "select

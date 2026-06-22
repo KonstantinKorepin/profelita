@@ -8,32 +8,22 @@ use App\Models\Service;
 use App\Models\Specialization;
 use App\Models\Url;
 use App\Services\PageDataProvider\PageDataProviderFactory;
-use App\Services\PageDataProvider\PageDataProviderInterface;
 
 class PageService
 {
-    private ReviewService $reviewService;
-    private MasterService $masterService;
-
-    public function __construct()
-    {
-        $this->reviewService = new ReviewService();
-        $this->masterService = new MasterService();
-    }
-
     /**
      * Возвращает данные для страниц
-     * @param string $url
+     * @param string $uri
      * @return array|null
      */
     public function getPageData(string $uri): ?array
     {
-        // обновляем данные сессии
         $this->updateDynamicPageSessionData($uri);
 
-        /** @var PageDataProviderInterface $provider */
-        $provider = PageDataProviderFactory::createPageDataProvider($uri);
-        return $provider->getData();
+        $url = Url::whereUrl($uri)->firstOrFail();
+        $factory = resolve(PageDataProviderFactory::class);
+        $provider = $factory->createPageDataProvider($url);
+        return $provider->getData($url);
     }
 
     /**
