@@ -3,23 +3,20 @@
 namespace App\Services\PageDataProvider;
 
 use App\Models\Service;
-use App\Models\ServiceTemplate;
 use App\Models\Url;
 use Illuminate\Support\Facades\DB;
 
-class ServicePageDataProvider extends PageDataProvider implements PageDataProviderInterface
+class ServicePageStrategy implements PageDataStrategyInterface
 {
-    public function getData(): array
+    public function getData(Url $url): array
     {
-        $service = Service::whereId($this->url->entity_id)->get()->first();
+        $service = Service::find($url->entity_id);
         $master = $service->master;
         $city = $master->city;
-        //$specialization = $service->serviceTemplate()->get()->first()->specialization()->get()->first();
         $specialization = $service->serviceTemplate->specialization;
         $areas = $city->areas->pluck('description', 'name')->toArray();
 
         $data['template'] = 'templates.services.main_template';
-
         $data['data'] = [
             'service' => $service,
             'master' => $master,
@@ -29,7 +26,6 @@ class ServicePageDataProvider extends PageDataProvider implements PageDataProvid
             'areas' => $areas
         ];
 
-        // хлебные крошки
         $breadcrumbs = [];
         $breadcrumbs[] = [
             'name' => 'Главная',
@@ -39,24 +35,21 @@ class ServicePageDataProvider extends PageDataProvider implements PageDataProvid
         $mainService = Service::where([
             'master_id' => $master->id,
             'main_service' => true
-        ])->get()->first();
+        ])->first();
         $mainServiceUrl = Url::where([
             'entity_class' => Url::SERVICE,
             'entity_id' => $mainService->id,
-        ])->get()->first()->url;
+        ])->first()->url;
         $breadcrumbs[] = [
             'name' => $specialization->catalog_name,
             'url' => $mainServiceUrl
         ];
-
         $breadcrumbs[] = [
             'name' => $service->name,
             'url' => null
         ];
-
         $data['data']['breadcrumbs'] = $breadcrumbs;
 
-        // список всех услуг текущего мастера для меню
         $sql = "select
                    s.id,
                    sp.id as specialization_id,
@@ -88,13 +81,12 @@ class ServicePageDataProvider extends PageDataProvider implements PageDataProvid
         foreach ($services as $service) {
             if (is_null($service->parent_id)) {
                 $serviceList[$service->id] = (array) $service;
-                $serviceList[$service->id]['active'] = ($this->url->url === $service->url);
+                $serviceList[$service->id]['active'] = ($url->url === $service->url);
             } else {
                 $serviceList[$service->parent_id]['list'][] = (array) $service;
                 $count = count($serviceList[$service->parent_id]['list']) - 1;
-                $serviceList[$service->parent_id]['list'][$count]['active'] = ($this->url->url === $service->url);
-                // если услуга находится в секции, то вся секция становится активной
-                if (($this->url->url === $service->url)) {
+                $serviceList[$service->parent_id]['list'][$count]['active'] = ($url->url === $service->url);
+                if ($url->url === $service->url) {
                     $serviceList[$service->parent_id]['section_active'] = true;
                 }
             }

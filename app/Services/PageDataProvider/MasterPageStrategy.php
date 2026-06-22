@@ -8,22 +8,16 @@ use App\Services\PageService;
 use App\Services\ReviewService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class MasterPageDataProvider extends PageDataProvider implements PageDataProviderInterface
+class MasterPageStrategy implements PageDataStrategyInterface
 {
-    private ReviewService $reviewService;
-    private PageService $pageService;
+    public function __construct(
+        private ReviewService $reviewService,
+        private PageService $pageService
+    ) {}
 
-    public function __construct(Url $url)
+    public function getData(Url $url): array
     {
-        parent::__construct($url);
-
-        $this->reviewService = resolve(ReviewService::class);
-        $this->pageService = resolve(PageService::class);
-    }
-
-    public function getData(): array
-    {
-        $master = Master::find($this->url->entity_id);
+        $master = Master::find($url->entity_id);
         if (!$master) {
             throw new NotFoundHttpException();
         }

@@ -7,24 +7,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PageDataProviderFactory
 {
-    private static array $map = [
-        Url::CITY => CityPageDataProvider::class,
-        Url::MASTER => MasterPageDataProvider::class,
-        Url::SERVICE => ServicePageDataProvider::class
-    ];
-
-    /**
-     * Возвращает экземпляр провайдера
-     * @param string $uri
-     * @return mixed
-     */
-    public static function createPageDataProvider(string $url)
+    public function createPageDataProvider(Url $url): PageDataStrategyInterface
     {
-        $url = Url::whereUrl($url)->get()->first();
-        if (!$url) {
-            throw new NotFoundHttpException();
-        }
-        $providerClass = self::$map[$url->entity_class];
-        return new $providerClass($url);
+        return match ($url->entity_class) {
+            Url::CITY => resolve(CityPageStrategy::class),
+            Url::MASTER => resolve(MasterPageStrategy::class),
+            Url::SERVICE => resolve(ServicePageStrategy::class),
+            default => throw new NotFoundHttpException(),
+        };
     }
 }
