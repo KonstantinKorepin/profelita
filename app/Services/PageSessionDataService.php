@@ -55,7 +55,7 @@ class PageSessionDataService
             'phone' => $master->phone,
             'specializationCode' => $master->specialization->code,
             'address' => $master->address ?? config('app.default_address'),
-            'phoneNumber' => preg_replace('/[\s-]/', '', $master->phone),
+            'phoneNumber' => StringHelper::getClearPhone($master->phone),
             'starWorkingHours' => $master->start_working_hours,
             'endWorkingHours' => $master->end_working_hours,
             'cityUrl' => ($city->code != config('app.main_city_code')) ? $city->code : route('main'),
