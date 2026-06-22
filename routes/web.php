@@ -49,7 +49,7 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function(){
     Route::resource('/masters', MasterController::class);
 });
 
-Route::fallback(function (PageService $service, PageSessionDataService $sessionDataService) {
+Route::fallback(function (PageService $service) {
     $data = $service->getPageData(request()->path());
     return view($data['template'], ['data' => $data['data']]);
 });

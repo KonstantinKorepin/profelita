@@ -41,7 +41,7 @@ class ServiceRepository implements ServiceRepositoryInterface
      * @param int $serviceId
      * @return Service
      */
-    public function getOne(int $serviceId): Master
+    public function getOne(int $serviceId): Service
     {
         return Service::findOrFail($serviceId);
     }
