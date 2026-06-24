@@ -11,10 +11,10 @@
                     </div>
                     <div class="text">
                         <div class="name">
-                            <a href="{{ $cityUrl }}">{{ env('SITE_NAME') }}</a>
+                            <a href="{{ $cityUrl }}">{{ config('app.site_name') }}</a>
                         </div>
                         <div class="descr">
-                            {{ env('SITE_SLOGAN') }}
+                            {{ config('app.site_slogan') }}
                         </div>
                     </div>
                 </div>

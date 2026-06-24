@@ -217,4 +217,6 @@ return [
     'main_city_code' => env('APP_MAIN_CITY_CODE', 'msk'),
     'main_city_name' => env('APP_MAIN_CITY_NAME', 'Москва'),
     'default_address' => env('APP_DEFAULT_ADDRESS', 'ул. Шоссе Энтузиастов, д. 31, стр. 36'),
+    'site_name' => env('SITE_NAME', 'ПрофЭлита'),
+    'site_slogan' => env('SITE_SLOGAN', 'Частные мастера в твоём городе'),
 ];
