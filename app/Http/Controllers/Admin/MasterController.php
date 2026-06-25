@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class MasterController extends Controller
 {
-    public function __construct(private MasterService $service)
+    public function __construct(private readonly MasterService $service)
     {}
 
     public function index()
