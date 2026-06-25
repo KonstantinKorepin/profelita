@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\CityRepositoryInterface;
+use App\Models\City;
 use Illuminate\Support\Collection;
+use App\Repositories\Interfaces\CityRepositoryInterface;
 
 class CityService
 {
@@ -17,5 +18,15 @@ class CityService
     public function getActiveAll(): Collection
     {
         return $this->repository->getActiveAll();
+    }
+
+    /**
+     * Город
+     * @param int $cityId
+     * @return City
+     */
+    public function getOne(int $cityId): City
+    {
+        return $this->repository->getOne($cityId);
     }
 }

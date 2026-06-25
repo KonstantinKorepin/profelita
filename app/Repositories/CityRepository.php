@@ -3,8 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\City;
-use App\Repositories\Interfaces\CityRepositoryInterface;
 use Illuminate\Support\Collection;
+use App\Repositories\Interfaces\CityRepositoryInterface;
 
 class CityRepository implements CityRepositoryInterface
 {
@@ -15,5 +15,15 @@ class CityRepository implements CityRepositoryInterface
     public function getActiveAll(): Collection
     {
         return City::whereActive(true)->get();
+    }
+
+    /**
+     * Город
+     * @param int $cityId
+     * @return City
+     */
+    public function getOne(int $cityId): City
+    {
+        return City::findOrFail($cityId);
     }
 }

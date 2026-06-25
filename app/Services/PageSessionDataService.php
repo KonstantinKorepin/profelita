@@ -8,12 +8,12 @@ use App\Models\Master;
 use App\Services\PageSessionData\CitySessionStrategy;
 use App\Services\PageSessionData\MasterSessionStrategy;
 use App\Services\PageSessionData\ServiceSessionStrategy;
-use App\Repositories\SessionRepository;
+use App\Repositories\Interfaces\SessionRepositoryInterface;
 
 class PageSessionDataService
 {
     public function __construct(
-        private SessionRepository $sessionRepository,
+        private SessionRepositoryInterface $sessionRepository,
         private CitySessionStrategy $citySessionStrategy,
         private MasterSessionStrategy $masterSessionStrategy,
         private ServiceSessionStrategy $serviceSessionStrategy,
