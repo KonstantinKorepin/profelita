@@ -3,15 +3,16 @@
 namespace App\Providers;
 
 use App\Repositories\CityRepository;
+use App\Repositories\MasterRepository;
+use App\Repositories\ReviewRepository;
+use App\Repositories\ServiceRepository;
+use App\Repositories\SessionRepository;
+use Illuminate\Support\ServiceProvider;
 use App\Repositories\Interfaces\CityRepositoryInterface;
 use App\Repositories\Interfaces\MasterRepositoryInterface;
 use App\Repositories\Interfaces\ReviewRepositoryInterface;
 use App\Repositories\Interfaces\ServiceRepositoryInterface;
 use App\Repositories\Interfaces\SessionRepositoryInterface;
-use App\Repositories\MasterRepository;
-use App\Repositories\ReviewRepository;
-use App\Repositories\ServiceRepository;
-use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
