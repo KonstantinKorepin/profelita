@@ -180,7 +180,7 @@ class Master extends Model
     }
 
     /**
-     * получает номер телефона мастреа без пробелов
+     * Получает номер телефона мастера без пробелов
      * @return string
      */
     public function getClearPhone(): string

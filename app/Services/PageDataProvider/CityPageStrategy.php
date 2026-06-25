@@ -2,16 +2,18 @@
 
 namespace App\Services\PageDataProvider;
 
+use App\Models\Url;
 use App\Models\City;
 use App\Models\Master;
-use App\Models\Url;
 use App\Services\MasterService;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\Interfaces\ReviewRepositoryInterface;
 
 class CityPageStrategy implements PageDataStrategyInterface
 {
     public function __construct(
-        private MasterService $masterService
+        private MasterService $masterService,
+        private ReviewRepositoryInterface $reviewRepository
     ) {}
 
     public function getData(Url $url): array
@@ -24,6 +26,7 @@ class CityPageStrategy implements PageDataStrategyInterface
             'city' => $city,
             'masters' => $this->masterService->getFrontMasters(),
             'master' => $master,
+            'reviews' => $this->reviewRepository->getFrontAll(),
             'map' => $master->map ?? null
         ];
 

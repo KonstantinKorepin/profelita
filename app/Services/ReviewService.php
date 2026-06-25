@@ -12,12 +12,8 @@ class ReviewService
     const NUMBER_PER_PAGE = 10;
     const NUMBER_MASTER_REVIEWS_PER_PAGE = 30;
 
-    private ReviewRepositoryInterface $repository;
-
-    public function __construct()
-    {
-        $this->repository = new ReviewRepository();
-    }
+    public function __construct(private ReviewRepository $repository)
+    {}
 
     /**
      * Отзывы на странице города.
@@ -26,15 +22,6 @@ class ReviewService
     public function getFrontReviews(): Collection
     {
         return $this->repository->getFrontAll();
-    }
-
-    /**
-     * Все отзывы.
-     * @return Collection
-     */
-    public function getAllReviews(): Collection
-    {
-        return $this->repository->getAll();
     }
 
     /** Все отзывы с пагинацией.

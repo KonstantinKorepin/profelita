@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Models\Master;
 use App\Models\Url;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use App\Repositories\Interfaces\MasterRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -17,22 +16,23 @@ class MasterRepository implements MasterRepositoryInterface
      */
     public function getFrontAll(): Collection
     {
-        return Master::join('specializations', 'masters.specialization_id', '=', 'specializations.id')
+        return Master::query()
+            ->select([
+                'masters.list_file_id',
+                'masters.last_name',
+                'masters.first_name',
+                'masters.middle_name',
+                'masters.rating',
+                'specializations.name',
+                'urls.url',
+            ])
+            ->join('specializations', 'masters.specialization_id', '=', 'specializations.id')
             ->join('urls', function ($join) {
                 $join->on('masters.id', '=', 'urls.master_id')
                     ->where('urls.entity_class', '=', Url::MASTER);
             })
             ->whereOnFront(true)
-            ->get(
-                [
-                    'masters.list_file_id',
-                    'masters.last_name',
-                    'masters.first_name',
-                    'masters.middle_name',
-                    'masters.rating',
-                    'specializations.name',
-                    'urls.url'
-                ]);
+            ->get();
     }
 
     /**
@@ -42,13 +42,16 @@ class MasterRepository implements MasterRepositoryInterface
      */
     public function getAllPaginate(int $numberPerPage): LengthAwarePaginator
     {
-        return DB::table('masters')
+        return Master::query()
+            ->select([
+                'masters.*',
+                'specializations.name as sp_name',
+                'cities.name as city_name',
+            ])
             ->join('specializations', 'masters.specialization_id', '=', 'specializations.id')
             ->join('cities', 'masters.city_id', '=', 'cities.id')
-            ->select(
-                'masters.*', 'specializations.name as sp_name', 'cities.name as city_name'
-            )
-            ->orderBy('masters.id')->paginate($numberPerPage);
+            ->orderBy('masters.id')
+            ->paginate($numberPerPage);
     }
 
     /**

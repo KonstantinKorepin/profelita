@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\Review
@@ -41,6 +42,11 @@ class Review extends Model
         'date',
         'on_front'
     ];
+
+    public function master(): BelongsTo
+    {
+        return $this->belongsTo(Master::class);
+    }
 }
 
 
