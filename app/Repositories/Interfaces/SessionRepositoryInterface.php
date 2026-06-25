@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\Dto\SessionDto;
+use App\Services\PageSessionData\SessionDto;
 
 interface SessionRepositoryInterface
 {

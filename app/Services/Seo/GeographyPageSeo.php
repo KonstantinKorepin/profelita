@@ -6,16 +6,16 @@ class GeographyPageSeo implements SeoTagInterface
 {
     public function getTitle(): string
     {
-        return implode(' ', ['География работ', '|', env('SITE_NAME')]);
+        return implode(' ', [config('seo.geography.title'), '|', config('app.site_name')]);
     }
 
     public function getDescription(): string
     {
-        return 'Наш сервис работает во всех крупных городах России';
+        return config('seo.geography.description');
     }
 
     public function getKeywords(): string
     {
-        return 'география работ';
+        return config('seo.geography.keywords');
     }
 }

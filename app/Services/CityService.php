@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\CityRepositoryInterface;
 
 class CityService
 {
-    public function __construct(private CityRepositoryInterface $repository)
+    public function __construct(private readonly CityRepositoryInterface $repository)
     {}
 
     /**
@@ -28,5 +28,15 @@ class CityService
     public function getOne(int $cityId): City
     {
         return $this->repository->getOne($cityId);
+    }
+
+    /**
+     * Возвращает город по коду
+     * @param string $cityCode
+     * @return City
+     */
+    public function getByCode(string $cityCode): City
+    {
+        return $this->repository->getByCode($cityCode);
     }
 }

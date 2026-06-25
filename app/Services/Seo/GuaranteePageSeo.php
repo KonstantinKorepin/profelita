@@ -6,16 +6,16 @@ class GuaranteePageSeo implements SeoTagInterface
 {
     public function getTitle(): string
     {
-        return implode(' ', ['Гарантии на работы', '|', env('SITE_NAME')]);
+        return implode(' ', [config('seo.guarantee.title'), '|', config('app.site_name')]);
     }
 
     public function getDescription(): string
     {
-        return 'Гарантии, которые предоставляют мастера нашего сервиса';
+        return config('seo.guarantee.description');
     }
 
     public function getKeywords(): string
     {
-        return 'гарантии на работы';
+        return config('seo.guarantee.keywords');
     }
 }

@@ -6,12 +6,9 @@ use App\Models\Service;
 
 class ServicePageSeo implements SeoTagInterface
 {
-    private Service $service;
-
-    public function __construct(Service $service)
-    {
-        $this->service = $service;
-    }
+    public function __construct(
+        private readonly Service $service
+    ){}
 
     public function getTitle(): string
     {

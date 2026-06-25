@@ -2,20 +2,20 @@
 
 namespace App\Services\Seo;
 
-class LoginPageSeo extends CitySeoTagsData implements SeoTagInterface
+class LoginPageSeo implements SeoTagInterface
 {
     public function getTitle(): string
     {
-        return implode(' ', ['Авторизация', '|', env('SITE_NAME')]);
+        return implode(' ', [config('seo.login.title'), '|', config('app.site_name')]);
     }
 
     public function getDescription(): string
     {
-        return 'Страница авторизации на сайте';
+        return config('seo.login.description');
     }
 
     public function getKeywords(): string
     {
-        return implode(' ', ['авторизация']);
+        return config('seo.login.keywords');
     }
 }

@@ -6,16 +6,16 @@ class ReviewsPageSeo implements SeoTagInterface
 {
     public function getTitle(): string
     {
-        return implode(' ', ['Отзывы', '|', env('SITE_NAME')]);
+        return implode(' ', [config('seo.reviews.title'), '|', config('app.site_name')]);
     }
 
     public function getDescription(): string
     {
-        return 'Отзывы клиентов о работе мастеров сервиса';
+        return config('seo.reviews.description');
     }
 
     public function getKeywords(): string
     {
-        return 'отзывы';
+        return config('seo.reviews.keywords');
     }
 }

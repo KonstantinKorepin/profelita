@@ -6,16 +6,16 @@ class MastersPageSeo implements SeoTagInterface
 {
     public function getTitle(): string
     {
-        return implode(' ', ['Мастера сервиса', '|', env('SITE_NAME')]);
+        return implode(' ', [config('seo.masters.title'), '|', config('app.site_name')]);
     }
 
     public function getDescription(): string
     {
-        return 'Список мастеров нашего сервиса';
+        return config('seo.masters.description');
     }
 
     public function getKeywords(): string
     {
-        return 'мастера';
+        return config('seo.masters.keywords');
     }
 }

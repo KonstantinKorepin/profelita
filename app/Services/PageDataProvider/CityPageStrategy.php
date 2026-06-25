@@ -11,10 +11,10 @@ use App\Services\ServiceService;
 class CityPageStrategy implements PageDataStrategyInterface
 {
     public function __construct(
-        private MasterService $masterService,
-        private ReviewService $reviewService,
-        private CityService $cityService,
-        private ServiceService $serviceService
+        private readonly MasterService $masterService,
+        private readonly ReviewService $reviewService,
+        private readonly CityService $cityService,
+        private readonly ServiceService $serviceService
     ) {}
 
     /**

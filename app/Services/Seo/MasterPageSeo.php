@@ -6,16 +6,13 @@ use App\Models\Master;
 
 class MasterPageSeo implements SeoTagInterface
 {
-    private Master $master;
-
-    public function __construct(Master $master)
-    {
-        $this->master = $master;
-    }
+    public function __construct(
+        private Master $master
+    ){}
 
     public function getTitle(): string
     {
-        return implode(' ', [$this->master->getSeoTitle(), '|', env('SITE_NAME')]);
+        return implode(' ', [$this->master->getSeoTitle(), '|', config('app.site_name')]);
     }
 
     public function getDescription(): string

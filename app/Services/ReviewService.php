@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Repositories\Interfaces\ReviewRepositoryInterface;
-use App\Repositories\ReviewRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -12,7 +11,7 @@ class ReviewService
     const NUMBER_PER_PAGE = 10;
     const NUMBER_MASTER_REVIEWS_PER_PAGE = 30;
 
-    public function __construct(private ReviewRepository $repository)
+    public function __construct(private ReviewRepositoryInterface $repository)
     {}
 
     /**

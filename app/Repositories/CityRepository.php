@@ -18,12 +18,22 @@ class CityRepository implements CityRepositoryInterface
     }
 
     /**
-     * Город
+     * Возвращает город по Id
      * @param int $cityId
      * @return City
      */
     public function getOne(int $cityId): City
     {
         return City::findOrFail($cityId);
+    }
+
+    /**
+     * Возвращает город по коду
+     * @param string $cityCode
+     * @return City
+     */
+    public function getByCode(string $cityCode): City
+    {
+        return City::whereCode($cityCode)->firstOrFail();
     }
 }

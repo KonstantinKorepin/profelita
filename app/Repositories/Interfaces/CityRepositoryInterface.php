@@ -9,4 +9,5 @@ interface CityRepositoryInterface
 {
     public function getActiveAll(): Collection;
     public function getOne(int $cityId): City;
+    public function getByCode(string $cityCode): City;
 }

@@ -5,11 +5,9 @@ use App\Http\Controllers\Admin\MasterController;
 use App\Http\Controllers\Api\SendMailController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserController;
-use App\Models\City;
+use App\Services\CityService;
 use App\Services\PageService;
-use App\Services\PageSessionDataService;
 use Illuminate\Support\Facades\Route;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,9 +20,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 |
 */
 
-Route::get('/', function (PageService $service) {
-    $url = City::whereCode(env('APP_MAIN_CITY_CODE'))->get()->first()->code;
-    $result = $service->getPageData($url);
+Route::get('/', function (PageService $pageService, CityService  $cityService) {
+    $city = $cityService->getByCode(config('app.main_city_code'));
+    $result = $pageService->getPageData($city->code);
     return view($result->template, ['data' => $result->data]);
 })->name('main');
 

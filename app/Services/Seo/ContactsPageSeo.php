@@ -1,21 +1,20 @@
 <?php
 
 namespace App\Services\Seo;
-
 class ContactsPageSeo implements SeoTagInterface
 {
     public function getTitle(): string
     {
-        return implode(' ', ['Контакты', '|', env('SITE_NAME')]);
+        return implode(' ', [config('seo.contacts.title'), '|', config('app.site_name')]);
     }
 
     public function getDescription(): string
     {
-        return 'Информация о контактах, по которым можно связаться с нами';
+        return config('seo.contacts.description');
     }
 
     public function getKeywords(): string
     {
-        return 'контакты';
+        return config('seo.contacts.keywords');
     }
 }

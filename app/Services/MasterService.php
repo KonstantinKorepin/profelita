@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Master;
 use App\Repositories\Interfaces\MasterRepositoryInterface;
-use App\Repositories\MasterRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -25,12 +24,9 @@ class MasterService
         'list_file',
     ];
 
-    private MasterRepositoryInterface $repository;
-
-    public function __construct()
-    {
-        $this->repository = new MasterRepository();
-    }
+    public function __construct(
+        private readonly MasterRepositoryInterface $repository
+    ){}
 
     /**
      * Отзывы на странице города.
@@ -60,7 +56,7 @@ class MasterService
     }
 
     /**
-     * обновляет данные мастера из формы
+     * Обновляет данные мастера из формы
      * @param array $data
      * @param int $masterId
      */

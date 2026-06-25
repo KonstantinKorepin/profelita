@@ -11,8 +11,7 @@ class SeoService
      */
     public function getSeoPageData(string $url): SeoTagInterface
     {
-        $factory = new SeoFactory();
-        $seoTag = $factory->create($url);
-        return $seoTag;
+        $factory = resolve(SeoFactory::class);
+        return $factory->create($url);
     }
 }

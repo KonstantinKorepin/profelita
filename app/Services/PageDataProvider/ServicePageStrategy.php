@@ -9,7 +9,7 @@ use App\Services\ServiceService;
 class ServicePageStrategy implements PageDataStrategyInterface
 {
     public function __construct(
-        private ServiceService $serviceService
+        private readonly ServiceService $serviceService
     ){}
 
     /**

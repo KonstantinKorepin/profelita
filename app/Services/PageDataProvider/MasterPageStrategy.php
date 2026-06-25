@@ -10,9 +10,9 @@ use App\Services\ReviewService;
 class MasterPageStrategy implements PageDataStrategyInterface
 {
     public function __construct(
-        private ReviewService $reviewService,
-        private PageService $pageService,
-        private MasterService $masterService
+        private readonly ReviewService $reviewService,
+        private readonly PageService $pageService,
+        private readonly MasterService $masterService
     ) {}
 
     /**
