@@ -2,20 +2,20 @@
 
 namespace App\Services\Seo;
 
-class NotFoundPageSeo extends CitySeoTagsData implements SeoTagInterface
+class NotFoundPageSeo implements SeoTagInterface
 {
     public function getTitle(): string
     {
-        return implode(' ', ['Страница не найдена', '|', env('SITE_NAME')]);
+        return implode(' ', [config('seo.not_found.title'), '|', config('app.site_name')]);
     }
 
     public function getDescription(): string
     {
-        return 'Страница не найдена';
+        return config('seo.not_found.description');
     }
 
     public function getKeywords(): string
     {
-        return 'Страница не найдена';
+        return config('seo.not_found.keywords');
     }
 }

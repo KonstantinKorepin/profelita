@@ -13,10 +13,10 @@ use App\Repositories\Interfaces\SessionRepositoryInterface;
 class PageSessionDataService
 {
     public function __construct(
-        private SessionRepositoryInterface $sessionRepository,
-        private CitySessionStrategy $citySessionStrategy,
-        private MasterSessionStrategy $masterSessionStrategy,
-        private ServiceSessionStrategy $serviceSessionStrategy,
+        private readonly SessionRepositoryInterface $sessionRepository,
+        private readonly CitySessionStrategy $citySessionStrategy,
+        private readonly MasterSessionStrategy $masterSessionStrategy,
+        private readonly ServiceSessionStrategy $serviceSessionStrategy,
     ){}
 
     /**
@@ -26,7 +26,7 @@ class PageSessionDataService
     public function updateSimplePageSessionData(): void
     {
         $sessionDto = $this->sessionRepository->getDataBySession();
-        $this->updateSessionData($sessionDto->getCity(), $sessionDto->getMaster());
+        $this->updateSessionData($sessionDto->city, $sessionDto->master);
     }
 
     /**
@@ -51,7 +51,7 @@ class PageSessionDataService
 
         if ($strategy) {
             $sessionDto = $strategy->getData($url);
-            $this->updateSessionData($sessionDto->getCity(), $sessionDto->getMaster());
+            $this->updateSessionData($sessionDto->city, $sessionDto->master);
         }
     }
 

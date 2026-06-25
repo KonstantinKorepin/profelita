@@ -6,16 +6,16 @@ class PartnerPageSeo implements SeoTagInterface
 {
     public function getTitle(): string
     {
-        return implode(' ', ['Информация о сотрудничестве', '|', env('SITE_NAME')]);
+        return implode(' ', [config('seo.partner.title'), '|', config('app.site_name')]);
     }
 
     public function getDescription(): string
     {
-        return 'Условия сотрудничества с сервисом для профессиональных мастеров бытовых услуг';
+        return config('seo.partner.description');
     }
 
     public function getKeywords(): string
     {
-        return 'условия сотрудничества';
+        return config('seo.partner.keywords');
     }
 }

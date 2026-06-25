@@ -9,7 +9,7 @@ use App\Services\PageDataProvider\PageResult;
 class PageService
 {
     public function __construct(
-        private PageSessionDataService $pageSessionDataService
+        private readonly PageSessionDataService $pageSessionDataService
     ){}
 
     /**

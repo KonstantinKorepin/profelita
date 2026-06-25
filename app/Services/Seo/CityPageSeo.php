@@ -3,28 +3,24 @@
 namespace App\Services\Seo;
 
 use App\Models\City;
-
-class CityPageSeo extends CitySeoTagsData implements SeoTagInterface
+class CityPageSeo implements SeoTagInterface
 {
-    private City $city;
-
-    public function __construct(City $city)
-    {
-        $this->city = $city;
-    }
+    public function __construct(
+        private readonly City $city
+    ){}
 
     public function getTitle(): string
     {
-        return implode(' ', [self::CITY_TITLE, $this->city->prepositional, '|', env('SITE_NAME')]);
+        return implode(' ', [config('seo.city.title'), $this->city->prepositional, '|', config('app.site_name')]);
     }
 
     public function getDescription(): string
     {
-        return implode(' ', [self::CITY_DESCRIPTION, $this->city->prepositional]);
+        return implode(' ', [config('seo.city.description'), $this->city->prepositional]);
     }
 
     public function getKeywords(): string
     {
-        return implode(' ', [self::CITY_KEYWORDS, $this->city->prepositional]);
+        return implode(' ', [config('seo.city.keywords'), $this->city->prepositional]);
     }
 }

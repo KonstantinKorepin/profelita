@@ -2,14 +2,13 @@
 
 namespace App\Services\PageSessionData;
 
-use App\Dto\SessionDto;
 use App\Models\Url;
-use App\Repositories\SessionRepository;
+use App\Repositories\Interfaces\SessionRepositoryInterface;
 
 class CitySessionStrategy implements PageSessionStrategyInterface
 {
     public function __construct(
-        private SessionRepository $sessionRepository
+        private readonly SessionRepositoryInterface $sessionRepository
     ) {}
 
     public function getData(Url $url): SessionDto

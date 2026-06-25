@@ -6,16 +6,16 @@ class AboutPageSeo implements SeoTagInterface
 {
     public function getTitle(): string
     {
-        return implode(' ', ['О сервисе', '|', env('SITE_NAME')]);
+        return implode(' ', [config('seo.about.title'), '|', config('app.site_name')]);
     }
 
     public function getDescription(): string
     {
-        return 'Сервис c полным переченем бытовых услуг на дому от профессиональных мастеров для клиентов по всей России';
+        return config('seo.about.description');
     }
 
     public function getKeywords(): string
     {
-        return 'сервис домашних услуг';
+        return config('seo.about.keywords');
     }
 }

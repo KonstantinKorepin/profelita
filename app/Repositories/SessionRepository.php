@@ -2,12 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Dto\SessionDto;
 use App\Models\City;
 use App\Models\Master;
 use App\Models\Specialization;
 use App\Models\Url;
 use App\Repositories\Interfaces\SessionRepositoryInterface;
+use App\Services\PageSessionData\SessionDto;
 
 class SessionRepository implements SessionRepositoryInterface
 {
@@ -35,9 +35,10 @@ class SessionRepository implements SessionRepositoryInterface
                 ->first();
         }
 
-        $sessionDto = new SessionDto();
-        $sessionDto->setCity($city);
-        $sessionDto->setMaster($master);
+        $sessionDto = new SessionDto(
+            city: $city,
+            master: $master
+        );
         return $sessionDto;
     }
 }

@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\ServiceRepositoryInterface;
 
 class ServiceService
 {
-    public function __construct(private ServiceRepositoryInterface $repository)
+    public function __construct(private readonly ServiceRepositoryInterface $repository)
     {}
 
     /**

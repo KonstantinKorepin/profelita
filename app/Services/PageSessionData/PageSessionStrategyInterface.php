@@ -2,7 +2,6 @@
 
 namespace App\Services\PageSessionData;
 
-use App\Dto\SessionDto;
 use App\Models\Url;
 
 interface PageSessionStrategyInterface

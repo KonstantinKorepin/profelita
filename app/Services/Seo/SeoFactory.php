@@ -2,10 +2,10 @@
 
 namespace App\Services\Seo;
 
-use App\Models\City;
-use App\Models\Master;
-use App\Models\Service;
 use App\Models\Url;
+use App\Services\CityService;
+use App\Services\MasterService;
+use App\Services\ServiceService;
 
 class SeoFactory
 {
@@ -20,40 +20,40 @@ class SeoFactory
         'enter' => LoginPageSeo::class
     ];
 
+    public function __construct(
+        private CityService    $cityService,
+        private MasterService  $masterService,
+        private ServiceService $serviceService
+    ){}
+
     public function create(string $url): SeoTagInterface
     {
-        if ($url === '/') {
-            $city = City::whereName(env('APP_MAIN_CITY_NAME'))->get()->first();
-            $seoTag = new MainPageSeo($city);
-            return $seoTag;
+        if ($url === route('main')) {
+            $city = $this->cityService->getOne(config('app.main_city_name'));
+            return new MainPageSeo($city);
         }
 
         if (in_array($url, array_keys($this->simplePages))) {
-            $seoTag = new $this->simplePages[$url];
-            return $seoTag;
+            return new $this->simplePages[$url];
         }
 
-        $url = Url::whereUrl($url)->get()->first();
-        if (empty($url)) {
-            $seoTag = new NotFoundPageSeo();
-            return $seoTag;
+        $url = Url::whereUrl($url)->first();
+        if (!$url) {
+            return new NotFoundPageSeo();
         }
 
         switch ($url->entity_class) {
             case Url::CITY:
-                $city = City::whereId($url->entity_id)->get()->first();
-                $seoTag = new CityPageSeo($city);
-                break;
+                $city = $this->cityService->getOne($url->entity_id);
+                return new CityPageSeo($city);
             case Url::MASTER:
-                $master = Master::whereId($url->entity_id)->get()->first();
-                $seoTag = new MasterPageSeo($master);
-                break;
+                $master = $this->masterService->getOne($url->entity_id);
+                return new MasterPageSeo($master);
             case Url::SERVICE:
-                $service = Service::whereId($url->entity_id)->get()->first();
-                $seoTag = new ServicePageSeo($service);
-                break;
+                $service = $this->serviceService->getOne($url->entity_id);
+                return new ServicePageSeo($service);
+            default:
+                return new NotFoundPageSeo();
         }
-
-        return $seoTag;
     }
 }
