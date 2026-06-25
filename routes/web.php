@@ -24,8 +24,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 Route::get('/', function (PageService $service) {
     $url = City::whereCode(env('APP_MAIN_CITY_CODE'))->get()->first()->code;
-    $data = $service->getPageData($url);
-    return view($data['template'], ['data' => $data['data']]);
+    $result = $service->getPageData($url);
+    return view($result->template, ['data' => $result->data]);
 })->name('main');
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
@@ -50,6 +50,6 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function(){
 });
 
 Route::fallback(function (PageService $service) {
-    $data = $service->getPageData(request()->path());
-    return view($data['template'], ['data' => $data['data']]);
+    $result = $service->getPageData(request()->path());
+    return view($result->template, ['data' => $result->data]);
 });

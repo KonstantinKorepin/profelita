@@ -3,30 +3,34 @@
 namespace App\Services\PageDataProvider;
 
 use App\Models\Url;
-use App\Models\City;
-use App\Models\Master;
+use App\Services\CityService;
 use App\Services\MasterService;
+use App\Services\ReviewService;
 use Illuminate\Support\Facades\DB;
-use App\Repositories\Interfaces\ReviewRepositoryInterface;
 
 class CityPageStrategy implements PageDataStrategyInterface
 {
     public function __construct(
         private MasterService $masterService,
-        private ReviewRepositoryInterface $reviewRepository
+        private ReviewService $reviewService,
+        private CityService $cityService
     ) {}
 
-    public function getData(Url $url): array
+    /**
+     * Возвращает данные города
+     * @param Url $url
+     * @return PageResult
+     */
+    public function getData(Url $url): PageResult
     {
-        $city = City::find($url->entity_id);
-        $master = Master::find($url->master_id);
+        $city = $this->cityService->getOne($url->entity_id);
+        $master = $url->master_id ? $this->masterService->getOne($url->master_id) : null;
 
-        $data['template'] = 'pages.city';
-        $data['data'] = [
+        $data = [
             'city' => $city,
             'masters' => $this->masterService->getFrontMasters(),
             'master' => $master,
-            'reviews' => $this->reviewRepository->getFrontAll(),
+            'reviews' => $this->reviewService->getFrontReviews(),
             'map' => $master->map ?? null
         ];
 
@@ -61,12 +65,15 @@ class CityPageStrategy implements PageDataStrategyInterface
 
         foreach ($services as $service) {
             if ($service->main_service) {
-                $data['data']['services'][$service->specialization_id]['mainService'] = $service;
+                $data['services'][$service->specialization_id]['mainService'] = $service;
             } else {
-                $data['data']['services'][$service->specialization_id]['servicesList'][] = $service;
+                $data['services'][$service->specialization_id]['servicesList'][] = $service;
             }
         }
 
-        return $data;
+        return new PageResult(
+            template: 'pages.city',
+            data: $data,
+        );
     }
 }

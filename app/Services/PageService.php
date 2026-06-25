@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Url;
 use App\Services\PageDataProvider\PageDataProviderFactory;
+use App\Services\PageDataProvider\PageResult;
 
 class PageService
 {
@@ -14,9 +15,9 @@ class PageService
     /**
      * Возвращает данные для страниц
      * @param string $uri
-     * @return array|null
+     * @return PageResult
      */
-    public function getPageData(string $uri): ?array
+    public function getPageData(string $uri): PageResult
     {
         $this->pageSessionDataService->updateDynamicPageSessionData($uri);
 

@@ -6,5 +6,5 @@ use App\Models\Url;
 
 interface PageDataStrategyInterface
 {
-    public function getData(Url $url): array;
+    public function getData(Url $url): PageResult;
 }

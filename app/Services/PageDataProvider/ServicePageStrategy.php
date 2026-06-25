@@ -8,7 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class ServicePageStrategy implements PageDataStrategyInterface
 {
-    public function getData(Url $url): array
+    /**
+     * Возвращает данные услуги
+     * @param Url $url
+     * @return PageResult
+     */
+    public function getData(Url $url): PageResult
     {
         $service = Service::find($url->entity_id);
         $master = $service->master;
@@ -16,8 +21,7 @@ class ServicePageStrategy implements PageDataStrategyInterface
         $specialization = $service->serviceTemplate->specialization;
         $areas = $city->areas->pluck('description', 'name')->toArray();
 
-        $data['template'] = 'templates.services.main_template';
-        $data['data'] = [
+        $data = [
             'service' => $service,
             'master' => $master,
             'city' => $city,
@@ -48,7 +52,7 @@ class ServicePageStrategy implements PageDataStrategyInterface
             'name' => $service->name,
             'url' => null
         ];
-        $data['data']['breadcrumbs'] = $breadcrumbs;
+        $data['breadcrumbs'] = $breadcrumbs;
 
         $sql = "select
                    s.id,
@@ -92,8 +96,11 @@ class ServicePageStrategy implements PageDataStrategyInterface
             }
         }
 
-        $data['data']['serviceList'] = $serviceList;
+        $data['serviceList'] = $serviceList;
 
-        return $data;
+        return new PageResult(
+            template: 'templates.services.main_template',
+            data: $data,
+        );
     }
 }
