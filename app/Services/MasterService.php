@@ -46,8 +46,7 @@ class MasterService
      */
     public function getAllMastersPaginate(): LengthAwarePaginator
     {
-        $data = $this->repository->getAllPaginate(self::NUMBER_PER_PAGE);
-        return $data;
+        return $this->repository->getAllPaginate(self::NUMBER_PER_PAGE);
     }
 
     /**

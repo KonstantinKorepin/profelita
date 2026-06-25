@@ -46,7 +46,7 @@ Route::get('/exit', [UserController::class, 'logout'])->name('logout')->middlewa
 
 Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function(){
     Route::get('/', [MainController::class, 'index'])->name('admin.index');
-    Route::resource('/masters', MasterController::class);
+    Route::resource('/masters', MasterController::class)->only(['index', 'edit', 'update']);
 });
 
 Route::fallback(function (PageService $service) {

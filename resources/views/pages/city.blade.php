@@ -375,7 +375,7 @@
             </div>
             <!-- кратикий текст о специалистах END -->
 
-            @include('blocks.reviews_front')
+            @include('blocks.reviews_front', ['reviews' => $data['reviews']])
 
             @php
             /*
