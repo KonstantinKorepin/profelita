@@ -3,26 +3,19 @@
 namespace App\Mail;
 
 use App\Http\Requests\SendFormRequest;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Queue\SerializesModels;
 
 class ConsultMail extends Mailable
 {
-    use Queueable, SerializesModels;
-
     const CODE = 'consult';
 
     /**
      * Create a new message instance.
      */
-    public function __construct(protected SendFormRequest $request)
-    {
-
-    }
+    public function __construct(private SendFormRequest $request)
+    {}
 
     /**
      * Get the message envelope.
@@ -30,7 +23,7 @@ class ConsultMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Профэлита: заполнена форма "Заказать консультацию"',
+            subject: config('services.mailer.subjects.consult'),
         );
     }
 
@@ -49,15 +42,5 @@ class ConsultMail extends Mailable
                 'url' => $this->request->input('url'),
             ],
         );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
     }
 }

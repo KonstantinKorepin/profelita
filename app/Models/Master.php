@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\StringHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -44,6 +45,11 @@ class Master extends Model
             $this->first_name,
             $this->middle_name
         ]);
+    }
+
+    public function getClearPhone(): string
+    {
+        return StringHelper::getClearPhone($this->phone);
     }
 
     public function getSeoTitle(): string
