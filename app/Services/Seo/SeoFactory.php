@@ -28,8 +28,8 @@ class SeoFactory
 
     public function create(string $url): SeoTagInterface
     {
-        if ($url === route('main')) {
-            $city = $this->cityService->getOne(config('app.main_city_name'));
+        if ($url === '/' || $url === '') {
+            $city = $this->cityService->getByCode(config('app.main_city_code'));
             return new MainPageSeo($city);
         }
 
