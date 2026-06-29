@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-
+    const IS_ADMIN = 1;
     public function loginForm()
     {
         return view('user.login');
@@ -19,14 +19,19 @@ class UserController extends Controller
      */
     public function loginStore(Request $request): RedirectResponse
     {
-        if (Auth::attempt(['name' => $request->input('name'),
-                           'password' => $request->input('password'),
-                           'is_admin' => 1])) {
-            return redirect()->route('admin.index')->with('success', 'Вы авторизованы под администратором!');
+        $auth = Auth::attempt([
+            'name' => $request->input('name'),
+            'password' => $request->input('password'),
+            'is_admin' => self::IS_ADMIN,
+        ]);
+        if ($auth) {
+            return redirect()
+                ->route('admin.index')
+                ->with('success', 'Вы авторизованы под администратором!');
         }
 
         return back()->withErrors([
-            __('auth.failed'),
+            'Логин или пароль указаны не верно!',
         ]);
     }
 
@@ -40,5 +45,4 @@ class UserController extends Controller
         $request->session()->regenerateToken();
         return redirect()->route('main');
     }
-
 }
