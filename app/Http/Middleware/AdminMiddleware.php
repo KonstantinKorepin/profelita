@@ -16,10 +16,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->is_admin) {
+        $user = Auth::user();
+        if ($user && $user->is_admin) {
             return $next($request);
         }
-
-        return redirect()->route('login.form');
+        return redirect()->route('login');
     }
 }
