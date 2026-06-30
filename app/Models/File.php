@@ -11,6 +11,7 @@ class File extends Model
         'file_name',
         'mime_type',
         'path',
+        'disk',
         'size',
         'directory'
     ];

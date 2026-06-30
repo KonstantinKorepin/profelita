@@ -9,11 +9,13 @@ use App\Services\PageSessionData\CitySessionStrategy;
 use App\Services\PageSessionData\MasterSessionStrategy;
 use App\Services\PageSessionData\ServiceSessionStrategy;
 use App\Repositories\Interfaces\SessionRepositoryInterface;
+use App\Repositories\Interfaces\UrlRepositoryInterface;
 
 class PageSessionDataService
 {
     public function __construct(
         private readonly SessionRepositoryInterface $sessionRepository,
+        private readonly UrlRepositoryInterface $urlRepository,
         private readonly CitySessionStrategy $citySessionStrategy,
         private readonly MasterSessionStrategy $masterSessionStrategy,
         private readonly ServiceSessionStrategy $serviceSessionStrategy,
@@ -41,7 +43,7 @@ class PageSessionDataService
             return;
         }
 
-        $url = Url::whereUrl($url)->firstOrFail();
+        $url = $this->urlRepository->getByUrl($url);
         $strategy = match ($url->entity_class) {
             Url::CITY => $this->citySessionStrategy,
             Url::MASTER => $this->masterSessionStrategy,

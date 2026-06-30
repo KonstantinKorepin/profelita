@@ -3,54 +3,43 @@
 namespace App\Services;
 
 use App\Models\File;
+use App\Repositories\Interfaces\FileRepositoryInterface;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
 
 class FileService
 {
-    /**
-     * @param UploadedFile $file
-     * @param string $diskDriver
-     * @param string $directory
-     * @param int $entityId
-     * @return File
-     * @throws FileNotFoundException
-     */
-    public function uploadFile(UploadedFile $file, string $diskDriver, string $directory, int $entityId): File
+    public function __construct(
+        private readonly FileRepositoryInterface $repository,
+    ){}
+
+    public function uploadFile(UploadedFile $file, string $disk, string $directory, int $entityId): File
     {
-        $filePath = $file->store($directory. DIRECTORY_SEPARATOR . $entityId, $diskDriver);
+        $path = $file->store($directory . '/' . $entityId, $disk);
 
-        if (is_string($filePath)) {
-            $newFile = new File();
-            $newFile->name = $file->getClientOriginalName();
-            $newFile->file_name = pathinfo($filePath, PATHINFO_BASENAME);
-            $newFile->mime_type = $file->getClientMimeType();
-            $newFile->path = $filePath;
-            $newFile->size = Storage::size($filePath);
-            $newFile->directory = $directory;
-            $newFile->save();
-
-            return $newFile;
-        } else {
-            throw new FileNotFoundException('Ошибка сохранения файла');
+        if (!is_string($path)) {
+            abort(500, 'Ошибка сохранения файла');
         }
+
+        return File::create([
+            'name' => $file->getClientOriginalName(),
+            'file_name' => pathinfo($path, PATHINFO_BASENAME),
+            'mime_type' => $file->getClientMimeType(),
+            'path' => $path,
+            'disk' => $disk,
+            'size' => Storage::disk($disk)->size($path),
+            'directory' => $directory,
+        ]);
     }
 
-    /**
-     * удаляем файл
-     * @param int $fileId
-     */
     public function deleteFile(int $fileId): void
     {
-        $file = File::whereId($fileId)->get()->first();
-        if (!$file) return;
-
-        if (file_exists(storage_path('app/public') . DIRECTORY_SEPARATOR . $file->path)) {
-            unlink(storage_path('app/public') . DIRECTORY_SEPARATOR . $file->path);
+        $file = $this->repository->find($fileId);
+        if (!$file) {
+            return;
         }
-        $file->delete();
-        return;
-    }
 
+        Storage::disk($file->disk)->delete($file->path);
+        $file->delete();
+    }
 }

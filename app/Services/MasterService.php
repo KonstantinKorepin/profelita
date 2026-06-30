@@ -9,27 +9,28 @@ use Illuminate\Support\Collection;
 
 class MasterService
 {
-    const NUMBER_PER_PAGE = 10;
+    public const NUMBER_PER_PAGE = 10;
 
-    const DIRECTOTY = 'avatars';
+    private const DIRECTORY = 'avatars';
 
-    private $fields = [
+    private array $fields = [
         'last_name',
         'first_name',
         'middle_name',
     ];
 
-    private $avatars = [
+    private array $avatars = [
         'profile_file',
         'list_file',
     ];
 
     public function __construct(
-        private readonly MasterRepositoryInterface $repository
+        private readonly MasterRepositoryInterface $repository,
+        private readonly FileService $fileService,
     ){}
 
     /**
-     * Отзывы на странице города.
+     * Список мастеров на фронт
      * @return Collection
      */
     public function getFrontMasters(): Collection
@@ -37,7 +38,8 @@ class MasterService
         return $this->repository->getFrontAll();
     }
 
-    /** Все отзывы с пагинацией.
+    /**
+     * Все мастера с пагинацией
      * @return LengthAwarePaginator
      */
     public function getAllMastersPaginate(): LengthAwarePaginator
@@ -46,7 +48,7 @@ class MasterService
     }
 
     /**
-     * Мастер
+     * Мастер по ID
      * @param int $masterId
      * @return Master
      */
@@ -62,51 +64,49 @@ class MasterService
      */
     public function updateData(array $data, int $masterId): void
     {
-        $master = Master::whereId($masterId)->get()->first();
-        foreach ($this->fields as $field) {
-            $master->$field = $data[$field];
-        }
+        $master = $this->getOne($masterId);
+        $master->fill(collect($data)->only($this->fields)->toArray());
         $master->save();
 
         $this->updateAvatars($data, $master);
     }
 
     /**
-     * обновить аватарки
+     * Удаление мастера
+     * @param int $masterId
+     */
+    public function delete(int $masterId): void
+    {
+        $this->getOne($masterId)->delete();
+    }
+
+    /**
+     * Обновление аватарок
      * @param array $data
      * @param Master $master
      */
     private function updateAvatars(array $data, Master $master): void
     {
-        $fileService = new FileService();
         foreach ($this->avatars as $fieldKey) {
-            if (!empty($data[$fieldKey])) {
-                // сначала нужно удалить старый файл, если он есть
-                switch ($fieldKey) {
-                    case 'profile_file':
-                        $fileId = $master->profile_file_id;
-                    break;
-                    case 'list_file':
-                        $fileId = $master->list_file_id;
-                    break;
-                }
-                if (!empty($fileId)) {
-                    $field = $fieldKey . '_id';
-                    $master->$field = null;
-                    $master->save();
-
-                    $fileService->deleteFile($fileId);
-                }
-
-                // добавляем новый файл
-                $file = $data[$fieldKey];
-                $file = $fileService->uploadFile($file, env('FILESYSTEM_DISK'), self::DIRECTOTY, $master->id);
-
-                $field = $fieldKey . '_id';
-                $master->$field = $file->id;
+            if (empty($data[$fieldKey])) {
+                continue;
             }
+
+            $fileIdField = $fieldKey . '_id';
+            if (!empty($master->$fileIdField)) {
+                $this->fileService->deleteFile($master->$fileIdField);
+            }
+
+            $file = $this->fileService->uploadFile(
+                $data[$fieldKey],
+                config('filesystems.default'),
+                self::DIRECTORY,
+                $master->id
+            );
+
+            $master->$fileIdField = $file->id;
         }
+
         $master->save();
     }
-
 }

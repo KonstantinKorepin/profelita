@@ -56,7 +56,9 @@ services:
       retries: 10
       start_period: 30s
     networks:
-      - profelita
+      profelita:
+        aliases:
+          - db
 
 volumes:
   mysql_data:

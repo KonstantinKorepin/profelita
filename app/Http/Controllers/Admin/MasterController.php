@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateMasterRequest;
 use App\Services\MasterService;
-use Illuminate\Http\Request;
 
 class MasterController extends Controller
 {
@@ -23,9 +23,15 @@ class MasterController extends Controller
         return view('admin.masters.edit', ['master' => $master]);
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateMasterRequest $request, int $id)
     {
-        $this->service->updateData($request->all(), $id);
+        $this->service->updateData($request->validated(), $id);
         return redirect()->route('masters.edit', ['master' => $id])->with('success', 'Данные обновлены');
+    }
+
+    public function destroy(int $id)
+    {
+        $this->service->delete($id);
+        return redirect()->route('masters.index')->with('success', 'Мастер удалён');
     }
 }
