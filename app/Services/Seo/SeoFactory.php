@@ -3,9 +3,11 @@
 namespace App\Services\Seo;
 
 use App\Models\Url;
+use App\Repositories\Interfaces\UrlRepositoryInterface;
 use App\Services\CityService;
 use App\Services\MasterService;
 use App\Services\ServiceService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SeoFactory
 {
@@ -23,7 +25,8 @@ class SeoFactory
     public function __construct(
         private CityService    $cityService,
         private MasterService  $masterService,
-        private ServiceService $serviceService
+        private ServiceService $serviceService,
+        private UrlRepositoryInterface $urlRepository,
     ){}
 
     public function create(string $url): SeoTagInterface
@@ -37,8 +40,9 @@ class SeoFactory
             return new $this->simplePages[$url];
         }
 
-        $url = Url::whereUrl($url)->first();
-        if (!$url) {
+        try {
+            $url = $this->urlRepository->getByUrl($url);
+        } catch (ModelNotFoundException) {
             return new NotFoundPageSeo();
         }
 

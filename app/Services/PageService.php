@@ -2,14 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\Url;
+use App\Repositories\Interfaces\UrlRepositoryInterface;
 use App\Services\PageDataProvider\PageDataProviderFactory;
 use App\Services\PageDataProvider\PageResult;
 
 class PageService
 {
     public function __construct(
-        private readonly PageSessionDataService $pageSessionDataService
+        private readonly PageSessionDataService $pageSessionDataService,
+        private readonly UrlRepositoryInterface $urlRepository,
     ){}
 
     /**
@@ -21,7 +22,7 @@ class PageService
     {
         $this->pageSessionDataService->updateDynamicPageSessionData($uri);
 
-        $url = Url::whereUrl($uri)->firstOrFail();
+        $url = $this->urlRepository->getByUrl($uri);
         $factory = resolve(PageDataProviderFactory::class);
         $provider = $factory->createPageDataProvider($url);
         return $provider->getData($url);

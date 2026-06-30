@@ -8,6 +8,8 @@ use App\Mail\PartnerMail;
 use App\Mail\ReviewMail;
 use App\Repositories\CityRepository;
 use App\Repositories\ReviewRepository;
+use App\Repositories\UrlRepository;
+use App\Repositories\Interfaces\UrlRepositoryInterface;
 use App\Services\ReviewService;
 use App\Services\Seo\SeoService;
 use App\Services\ServiceService;
