@@ -44,6 +44,7 @@ class FillServicesMaster extends Command
 
         $master->update(['actual' => true]);
         $city->update(['active' => true]);
+        Service::whereMasterId($master->id)->delete();
 
         $serviceTemplates = $this->serviceTemplateRepository->getBySpecializationId($master->specialization_id);
         $serviceIdsByTemplateId = [];
@@ -80,21 +81,14 @@ class FillServicesMaster extends Command
                 }
             }
 
-            $upsertData = [];
             foreach ($templateParentMap as $templateId => $parentTemplateId) {
                 $parentServiceId = $serviceIdsByTemplateId[$parentTemplateId] ?? null;
                 if ($parentServiceId === null) {
                     continue;
                 }
 
-                $upsertData[] = [
-                    'id' => $serviceIdsByTemplateId[$templateId],
-                    'parent_id' => $parentServiceId,
-                ];
-            }
-
-            if ($upsertData !== []) {
-                Service::upsert($upsertData, ['id'], ['parent_id']);
+                Service::whereKey($serviceIdsByTemplateId[$templateId])
+                    ->update(['parent_id' => $parentServiceId]);
             }
         });
 
