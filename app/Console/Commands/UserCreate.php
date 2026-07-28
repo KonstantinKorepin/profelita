@@ -2,38 +2,38 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 
 class UserCreate extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'app:user-create {name} {email} {is_admin} {password}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Создание пользователя';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle()
-    {
-        $user = new User();
-        $user->name = $this->argument('name');
-        $user->email = $this->argument('email');
-        $user->is_admin = (int) $this->argument('is_admin');
-        $user->password = Hash::make($this->argument('password'));
-        $user->save();
+    public function __construct(
+        private readonly UserRepositoryInterface $repository,
+    ) {
+        parent::__construct();
+    }
 
-        $this->info('Готово!');
+    public function handle(): int
+    {
+        $email = $this->argument('email');
+        if ($this->repository->findByEmail($email)) {
+            $this->error("Пользователь с email {$email} уже существует");
+            return self::FAILURE;
+        }
+
+        $this->repository->create([
+            'name' => $this->argument('name'),
+            'email' => $email,
+            'is_admin' => (int) $this->argument('is_admin'),
+            'password' => Hash::make($this->argument('password')),
+        ]);
+
+        $this->info('Пользователь добавлен!');
+        return self::SUCCESS;
     }
 }
