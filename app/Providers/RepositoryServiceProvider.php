@@ -9,6 +9,7 @@ use App\Repositories\ServiceRepository;
 use App\Repositories\SessionRepository;
 use App\Repositories\UrlRepository;
 use App\Repositories\FileRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\Interfaces\CityRepositoryInterface;
 use App\Repositories\Interfaces\MasterRepositoryInterface;
@@ -17,6 +18,7 @@ use App\Repositories\Interfaces\ServiceRepositoryInterface;
 use App\Repositories\Interfaces\SessionRepositoryInterface;
 use App\Repositories\Interfaces\UrlRepositoryInterface;
 use App\Repositories\Interfaces\FileRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -32,6 +34,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SessionRepositoryInterface::class, SessionRepository::class);
         $this->app->bind(UrlRepositoryInterface::class, UrlRepository::class);
         $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
     }
 
     /**

@@ -13,6 +13,14 @@ class FileService
         private readonly FileRepositoryInterface $repository,
     ){}
 
+    /**
+     * Загружает файл
+     * @param UploadedFile $file
+     * @param string $disk
+     * @param string $directory
+     * @param int $entityId
+     * @return File
+     */
     public function uploadFile(UploadedFile $file, string $disk, string $directory, int $entityId): File
     {
         $path = $file->store($directory . '/' . $entityId, $disk);
@@ -32,6 +40,11 @@ class FileService
         ]);
     }
 
+    /**
+     * Удаляет файл
+     * @param int $fileId
+     * @return void
+     */
     public function deleteFile(int $fileId): void
     {
         $file = $this->repository->find($fileId);
