@@ -7,6 +7,14 @@
 php artisan app:user-create {name} {email} {is_admin} {password}
 ```
 
+## Добавление данных для пользователя:
+
+### Добавление услуг пользователя по id:
+```shell
+php artisan app:fill-services-master {master_id}
+```
+
+
 ## Как развернуть бд:
 **Автоматически:**
 ```shell
