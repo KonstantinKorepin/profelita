@@ -14,3 +14,4 @@ Disallow: /*?page=
 Sitemap: https://profelita.ru/sitemap_cities.xml
 Sitemap: https://profelita.ru/sitemap_pages.xml
 Sitemap: https://profelita.ru/sitemap_services.xml
+Sitemap: https://profelita.ru/sitemap_masters.xml
