@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -60,23 +60,9 @@
     @include('layouts.forms-hidden')
 
 
-    <script src="https://www.google.com/recaptcha/api.js?render=@php print env('RECAPTCHA_CODE'); @endphp"></script>
-    <script>
-        function ready() {
-            grecaptcha.ready(function() {
-                grecaptcha.execute('@php print env('RECAPTCHA_CODE'); @endphp', {action: 'homepage'}).then(function(token) {
-
-                   var els = document.getElementsByName('token-recaptcha'), i;
-
-                   for (i=0; i < els.length; i++)
-                   {
-                        els[i].value = token;
-                   }
-                });
-            });
-        }
-        document.addEventListener('DOMContentLoaded', ready);
-    </script>
+    <script id="recaptcha-api"
+            src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"
+            data-site-key="{{ config('services.recaptcha.site_key') }}"></script>
 
     <script src="{{ asset('/js/jquery.min.js') }}"></script>
     <script src="{{ asset('/js/popper.min.js') }}"></script>

@@ -130,44 +130,75 @@ $(document).ready(function() {
 	});
 
     /** Отправка форм **/
-    $('form.email-form').submit(function () {
+    $('form.email-form').submit(function (event) {
+        event.preventDefault();
 
-        var form = $(this); // запишем форму, чтобы потом не было проблем с this
-        var error = false; // предварительно ошибок нет, эта переменная нужна на тот случай, если будем делать валидацию на стороне JS
+        var form = $(this);
+        if (form.data('submitting')) {
+            return false;
+        }
 
-        if (!error) { // если ошибки нет
-            var data = form.serialize(); // подготавливаем данные
+        var tokenInput = form.find('[name="token-recaptcha"]');
+        var submitButtons = form.find(':submit:enabled');
+        var siteKey = $('#recaptcha-api').attr('data-site-key');
 
-            $.ajax({ // инициализируем ajax запрос
-                type: 'POST', // отправляем в POST формате, можно GET
-                url: '/send-mail', // путь до обработчика, у нас он лежит в той же папке
-                dataType: 'json', // ответ ждем в json формате
-                data: data, // данные для отправки
-                beforeSend: function(data) { // событие до отправки
-                },
-                success: function(data){ // событие после удачного обращения к серверу и получения ответа
-                    if (data.response === "OK"){
-                        Fancybox.show([{ src: "#sucess", type: "inline" }]);
+        form.data('submitting', true);
+        tokenInput.val('');
+        submitButtons.prop('disabled', true);
 
-                        setTimeout(function(){
-                            $('button.is-close').trigger('click');
-                        }, 5000);
-                    } else {
-                        Fancybox.show([{ src: "#error", type: "inline" }]);
+        function finishSubmission() {
+            tokenInput.val('');
+            submitButtons.prop('disabled', false);
+            form.removeData('submitting');
+        }
 
-                        setTimeout(function(){
-                            $('button.is-close').trigger('click');
-                        }, 5000);
-                    }
-                },
-                error: function (xhr, ajaxOptions, thrownError) { // в случае неудачного завершения запроса к серверу
-                    alert(xhr.status); // покажем ответ сервера
-                    alert(thrownError); // и текст ошибки
-                },
-                complete: function(data) { // событие после любого исхода
+        function showResult(success) {
+            Fancybox.show([{ src: success ? "#sucess" : "#error", type: "inline" }]);
+            setTimeout(function () {
+                $('button.is-close').trigger('click');
+            }, 5000);
+        }
 
+        function failSubmission() {
+            finishSubmission();
+            showResult(false);
+        }
+
+        if (!siteKey || typeof grecaptcha === 'undefined') {
+            failSubmission();
+            return false;
+        }
+
+        try {
+            grecaptcha.ready(function () {
+                try {
+                    grecaptcha.execute(siteKey, {action: 'homepage'}).then(function (token) {
+                        if (!token) {
+                            failSubmission();
+                            return;
+                        }
+
+                        tokenInput.val(token);
+                        $.ajax({
+                            type: 'POST',
+                            url: form.attr('action'),
+                            dataType: 'json',
+                            data: form.serialize(),
+                            success: function (data) {
+                                showResult(data.response === "OK");
+                            },
+                            error: function () {
+                                showResult(false);
+                            },
+                            complete: finishSubmission
+                        });
+                    }).catch(failSubmission);
+                } catch (error) {
+                    failSubmission();
                 }
             });
+        } catch (error) {
+            failSubmission();
         }
 
         return false;
