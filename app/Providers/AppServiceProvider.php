@@ -84,7 +84,8 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer('blocks.main_services', function ($view){
             $service = resolve(ServiceService::class);
-            $services = $service->getMainServicesAll(session('cityId'));
+            $cityId = session('cityId');
+            $services = $cityId ? $service->getMainServicesAll($cityId) : collect();
 
             $view->with('services', $services);
         });

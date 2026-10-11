@@ -231,7 +231,15 @@ docker compose --env-file docker/.env -f docker/docker-compose.yaml exec php ven
 docker compose --env-file docker/.env -f docker/docker-compose.yaml down
 ```
 
-Тесты генераторов используют SQLite в памяти и требуют расширения `pdo_sqlite`. Проверка главной страницы в `ExampleTest` использует базу из окружения и требует подготовленных данных сайта. Настройки PHPUnit находятся в `phpunit.xml`.
+Тесты используют изолированную SQLite-базу в памяти и требуют расширения `pdo_sqlite`. Подключение задано в `phpunit.xml`; данные локальной MySQL-базы и SQL-дамп для тестов не нужны. Проверки страниц и создания пользователей применяют миграции и создают собственные данные. Покрыты генераторы услуг, URL и sitemap, маршрутизация страниц, ответы 404 и создание пользователей.
+
+Для запуска отдельного набора добавьте фильтр:
+
+```bash
+docker compose --env-file docker/.env -f docker/docker-compose.yaml exec php php artisan test --filter=PageRoutingTest
+```
+
+В тестах страниц функция MySQL `DATE_FORMAT` воспроизводится средствами SQLite для используемого формата даты. Эти проверки не заменяют проверку совместимости SQL с MySQL.
 
 Логи Laravel по умолчанию находятся в `storage/logs/laravel.log`. Xdebug в Docker включается по триггеру: через Xdebug Helper или параметр `XDEBUG_TRIGGER=1` в URL. Для настройки IDE и деталей окружения см. [docker/README.md](docker/README.md).
 
