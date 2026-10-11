@@ -2,67 +2,43 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Url;
+use App\Services\MasterSitemapGenerator;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Throwable;
 
 class SitemapGeneratingMaster extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'app:sitemap-generating-master {master_id}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Генерация карты для мастера';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+    public function handle(MasterSitemapGenerator $generator): int
     {
-        $masterId = $this->argument('master_id');
-        $filename = base_path() . DIRECTORY_SEPARATOR . 'sitemap_master_data.xml';
-        $file = fopen($filename, 'w+');
-        fwrite($file, '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL);
-        fwrite($file, '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL);
+        $masterId = filter_var($this->argument('master_id'), FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1],
+        ]);
+        if ($masterId === false) {
+            $this->error('master_id должен быть положительным целым числом.');
 
-        // url самого мастера
-        Url::where(['entity_class' => Url::MASTER, 'entity_id' => $masterId])->chunk(3, function ($urls) use ($file) {
-            foreach ($urls as $url) {
-                $date = \DateTime::createFromFormat('Y-m-d H:i:s', $url->updated_at)->format('Y-m-d');
+            return self::FAILURE;
+        }
 
-                fwrite($file, '<url>');
-                fwrite($file, '<loc>' . env('APP_URL') . '/'. $url->url . '</loc>');
-                fwrite($file, '<lastmod>' . $date . '</lastmod>');
-                fwrite($file, '<changefreq>yearly</changefreq>');
-                fwrite($file, '<priority>0.5</priority>');
-                fwrite($file, '</url>' . PHP_EOL);
-            }
-        });
+        try {
+            $filename = $generator->generate($masterId);
+        } catch (ModelNotFoundException) {
+            $this->error('Мастер не найден.');
 
-        // url услуг
-        Url::where(['entity_class' => Url::SERVICE, 'master_id' => $masterId])->chunk(3, function ($urls) use ($file) {
-            foreach ($urls as $url) {
-                $date = \DateTime::createFromFormat('Y-m-d H:i:s', $url->updated_at)->format('Y-m-d');
+            return self::FAILURE;
+        } catch (Throwable $exception) {
+            report($exception);
+            $this->error('Не удалось сгенерировать sitemap: '.$exception->getMessage());
 
-                fwrite($file, '<url>');
-                fwrite($file, '<loc>' . env('APP_URL') . '/'. $url->url . '</loc>');
-                fwrite($file, '<lastmod>' . $date . '</lastmod>');
-                fwrite($file, '<changefreq>yearly</changefreq>');
-                fwrite($file, '<priority>0.5</priority>');
-                fwrite($file, '</url>' . PHP_EOL);
-            }
-        });
+            return self::FAILURE;
+        }
 
-        fwrite($file, '</urlset>');
-        fclose($file);
+        $this->info('Sitemap создан: '.$filename);
 
-        $this->info('Готово!');
+        return self::SUCCESS;
     }
 }

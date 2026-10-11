@@ -2,46 +2,43 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Url;
+use App\Services\CitySitemapGenerator;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Throwable;
 
 class SitemapGeneratingCity extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'app:sitemap-generating-city {city_id}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Генерация карты для города';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+    public function handle(CitySitemapGenerator $generator): int
     {
-        $cityId = $this->argument('city_id');
-        $url = Url::where(['entity_class' => URL::CITY, 'entity_id' => $cityId])->get()->first();
+        $cityId = filter_var($this->argument('city_id'), FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1],
+        ]);
+        if ($cityId === false) {
+            $this->error('city_id должен быть положительным целым числом.');
 
-        $filename = base_path() . DIRECTORY_SEPARATOR . 'sitemap_city_data.xml';
-        $file = fopen($filename, 'w+');
-        fwrite($file, '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL);
-        fwrite($file, '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL);
-        fwrite($file, '<url>');
-        fwrite($file, '<loc>' . env('APP_URL') . '/' . $url->url . '</loc>');
-        fwrite($file, '<lastmod>' . date('Y-m-d') . '</lastmod>');
-        fwrite($file, '<changefreq>yearly</changefreq>');
-        fwrite($file, '<priority>0.1</priority>');
-        fwrite($file, '</url>' . PHP_EOL);
-        fwrite($file, '</urlset>');
-        fclose($file);
+            return self::FAILURE;
+        }
 
-        $this->info('Готово!');
+        try {
+            $filename = $generator->generate($cityId);
+        } catch (ModelNotFoundException) {
+            $this->error('Город не найден.');
+
+            return self::FAILURE;
+        } catch (Throwable $exception) {
+            report($exception);
+            $this->error('Не удалось сгенерировать sitemap: '.$exception->getMessage());
+
+            return self::FAILURE;
+        }
+
+        $this->info('Sitemap создан: '.$filename);
+
+        return self::SUCCESS;
     }
 }

@@ -2,84 +2,43 @@
 
 namespace App\Console\Commands;
 
-use App\Models\City;
-use App\Models\Master;
-use App\Models\Service;
-use App\Models\ServiceTemplate;
-use App\Services\StringHelper;
+use App\Services\TemplateServicesGenerator;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Throwable;
 
 class FillServicesNewTemplate extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'app:fill-services-template {service_template_id}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Заполнение данных по услугам по всем мастерам по определённому шаблону';
+    protected $description = 'Добавление недостающих услуг по шаблону актуальным мастерам';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle(): void
+    public function handle(TemplateServicesGenerator $generator): int
     {
-        foreach (City::all() as $city) {
-            $cities[$city->id] = $city;
+        $templateId = filter_var($this->argument('service_template_id'), FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1],
+        ]);
+        if ($templateId === false) {
+            $this->error('service_template_id должен быть положительным целым числом.');
+
+            return self::FAILURE;
         }
 
-        $serviceTemplate = ServiceTemplate::whereId($this->argument('service_template_id'))->get()->first();
-        $specializationId = $serviceTemplate->specialization_id;
+        try {
+            $result = $generator->generate($templateId);
+        } catch (ModelNotFoundException) {
+            $this->error('Шаблон услуги не найден.');
 
-        Master::whereActual(true)
-            ->where(['specialization_id' => $specializationId])
-            ->chunk(3, function ($masters) use ($cities, $serviceTemplate) {
-                foreach ($masters as $master) {
-                    $city = $cities[$master->city_id];
-                    $cityPrepositional = $city->prepositional;
-                    $cityName = $city->name;
+            return self::FAILURE;
+        } catch (Throwable $exception) {
+            report($exception);
+            $this->error('Не удалось добавить услуги: '.$exception->getMessage());
 
-                    $service = new Service();
-                    $service->master_id = $master->id;
-                    $service->service_templates_id = $serviceTemplate->id;
+            return self::FAILURE;
+        }
 
-                    if (!empty($serviceTemplate->parent_id)) {
-                        $parentServiceTemplatesData[$serviceTemplate->id] = $serviceTemplate->parent_id;
-                    }
+        $this->info("Добавлено услуг: {$result['created']}. Уже существовали: {$result['skipped']}.");
 
-                    if (!empty($serviceTemplate->parent_id)) {
-                        // берём id сервиса, которая привязана к данному пользователю, и у
-                        // которой service_templates_id = $serviceTemplate->parent_id
-                        // и привязываем уже к данной услуге как parent_id
-                        $serviceParent = Service::whereMasterId($master->id)
-                                            ->where(['service_templates_id' => $serviceTemplate->parent_id])
-                                            ->get()->first();
-                        if (!empty($serviceParent)) {
-                            $service->parent_id = $serviceParent->id;
-                        }
-                    }
-
-                    $service->name = str_replace('{:prepositional}', $cityPrepositional, StringHelper::getSeoTagString($serviceTemplate->name));
-                    $service->h1 = str_replace('{:prepositional}', $cityPrepositional, StringHelper::getSeoTagString($serviceTemplate->h1));
-                    $service->title = str_replace('{:prepositional}', $cityPrepositional, StringHelper::getSeoTagString($serviceTemplate->title));
-                    $service->description = str_replace('{:prepositional}', $cityPrepositional, StringHelper::getSeoTagString($serviceTemplate->description));
-                    $service->keywords = str_replace('{:name}', $cityName, StringHelper::getSeoTagString($serviceTemplate->keywords));
-                    $service->template = $serviceTemplate->default_template;
-                    $service->main_service = $serviceTemplate->main_service;
-                    $service->on_city_list = $serviceTemplate->on_city_list;
-                    $service->section = $serviceTemplate->section;
-                    $service->price = $serviceTemplate->default_price;
-                    $service->sort = $serviceTemplate->sort;
-                    $service->save();
-                }
-            });
-
-        $this->info('Готово!');
+        return self::SUCCESS;
     }
 }

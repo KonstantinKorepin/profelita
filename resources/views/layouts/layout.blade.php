@@ -24,9 +24,6 @@
     <meta name="description" content="{{  $seoTag->getDescription() }}" />
     <meta name="keywords" content="{{  $seoTag->getKeywords() }}" />
 
-    <script src="https://api-maps.yandex.ru/2.1/?apikey=cdcdb592-9783-4e2a-9ca4-b51864dd8481&lang=ru_RU" type="text/javascript">
-    </script>
-
     @include('layouts.counters')
 </head>
 <body>

@@ -21,6 +21,7 @@
             </div>
         </div>
     </div>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=cdcdb592-9783-4e2a-9ca4-b51864dd8481&lang=ru_RU" type="text/javascript"></script>
     <script type="text/javascript">
         ymaps.ready(init);
 

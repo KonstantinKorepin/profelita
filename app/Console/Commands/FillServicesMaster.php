@@ -2,15 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Models\City;
-use App\Models\Service;
 use App\Repositories\Interfaces\CityRepositoryInterface;
 use App\Repositories\Interfaces\MasterRepositoryInterface;
-use App\Repositories\Interfaces\ServiceTemplateRepositoryInterface;
-use App\Services\StringHelper;
+use App\Services\MasterServicesGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class FillServicesMaster extends Command
 {
@@ -21,96 +18,49 @@ class FillServicesMaster extends Command
     public function __construct(
         private readonly MasterRepositoryInterface $masterRepository,
         private readonly CityRepositoryInterface $cityRepository,
-        private readonly ServiceTemplateRepositoryInterface $serviceTemplateRepository
+        private readonly MasterServicesGenerator $generator
     ) {
         parent::__construct();
     }
 
-    public function handle(): void
+    public function handle(): int
     {
+        $masterId = filter_var($this->argument('master_id'), FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1],
+        ]);
+        if ($masterId === false) {
+            $this->error('master_id должен быть положительным целым числом.');
+
+            return self::FAILURE;
+        }
+
         try {
-            $master = $this->masterRepository->getOne((int) $this->argument('master_id'));
+            $master = $this->masterRepository->getOne($masterId);
         } catch (ModelNotFoundException) {
             $this->error('Мастер не найден.');
-            return;
+
+            return self::FAILURE;
         }
 
         try {
             $city = $this->cityRepository->getOne($master->city_id);
         } catch (ModelNotFoundException) {
             $this->error('Город мастера не найден.');
-            return;
+
+            return self::FAILURE;
         }
 
-        $master->update(['actual' => true]);
-        $city->update(['active' => true]);
-        Service::whereMasterId($master->id)->delete();
+        try {
+            $count = $this->generator->generate($master, $city);
+        } catch (Throwable $exception) {
+            report($exception);
+            $this->error('Не удалось пересоздать услуги: '.$exception->getMessage());
 
-        $serviceTemplates = $this->serviceTemplateRepository->getBySpecializationId($master->specialization_id);
-        $serviceIdsByTemplateId = [];
-        $templateParentMap = [];
-
-        DB::transaction(function () use (
-            $serviceTemplates,
-            $master,
-            $city,
-            &$serviceIdsByTemplateId,
-            &$templateParentMap
-        ) {
-            foreach ($serviceTemplates as $template) {
-                $service = Service::create([
-                    'master_id' => $master->id,
-                    'service_templates_id' => $template->id,
-                    'parent_id' => null,
-                    'name' => $this->replaceSeoTags($template->name, $city),
-                    'h1' => $this->replaceSeoTags($template->h1, $city),
-                    'title' => $this->replaceSeoTags($template->title, $city),
-                    'description' => $this->replaceSeoTags($template->description, $city),
-                    'keywords' => $this->replaceSeoTags($template->keywords, $city),
-                    'template' => $template->default_template,
-                    'main_service' => $template->main_service,
-                    'on_city_list' => $template->on_city_list,
-                    'section' => $template->section,
-                    'price' => $template->default_price,
-                    'sort' => $template->sort,
-                ]);
-
-                $serviceIdsByTemplateId[$template->id] = $service->id;
-                if ($template->parent_id) {
-                    $templateParentMap[$template->id] = (int) $template->parent_id;
-                }
-            }
-
-            foreach ($templateParentMap as $templateId => $parentTemplateId) {
-                $parentServiceId = $serviceIdsByTemplateId[$parentTemplateId] ?? null;
-                if ($parentServiceId === null) {
-                    continue;
-                }
-
-                Service::whereKey($serviceIdsByTemplateId[$templateId])
-                    ->update(['parent_id' => $parentServiceId]);
-            }
-        });
-
-        $this->info('Услуги мастера успешно добавлены!');
-    }
-
-    /**
-     * Заменяет тэги
-     * @param string|null $value
-     * @param City $city
-     * @return string
-     */
-    private function replaceSeoTags(?string $value, City $city): string
-    {
-        if ($value === null || $value === '') {
-            return '';
+            return self::FAILURE;
         }
 
-        return str_replace(
-            ['{:prepositional}', '{:name}'],
-            [$city->prepositional, $city->name],
-            StringHelper::getSeoTagString($value)
-        );
+        $this->info("Услуги мастера успешно пересозданы: {$count}.");
+
+        return self::SUCCESS;
     }
 }
