@@ -255,5 +255,3 @@ docker compose --env-file docker/.env -f docker/docker-compose.yaml exec php php
 - Изменение `MYSQL_ROOT_PASSWORD` в `docker/.env` не меняет пароль в уже инициализированной базе.
 - При `APP_ENV=local` или `testing` внешние счётчики аналитики и виджет Jivo не подключаются.
 - Корнем веб-сервера должен быть `public/`. Для рабочего окружения задайте `APP_ENV=production`, `APP_DEBUG=false`, реальный `APP_URL` и настройки почты.
-
-Архитектурные решения и план рефакторинга описаны в [AGENTS.md](AGENTS.md).
