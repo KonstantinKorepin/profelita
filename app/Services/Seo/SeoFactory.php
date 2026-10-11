@@ -42,22 +42,22 @@ class SeoFactory
 
         try {
             $url = $this->urlRepository->getByUrl($url);
+
+            switch ($url->entity_class) {
+                case Url::CITY:
+                    $city = $this->cityService->getOne($url->entity_id);
+                    return new CityPageSeo($city);
+                case Url::MASTER:
+                    $master = $this->masterService->getOne($url->entity_id);
+                    return new MasterPageSeo($master);
+                case Url::SERVICE:
+                    $service = $this->serviceService->getOne($url->entity_id);
+                    return new ServicePageSeo($service);
+                default:
+                    return new NotFoundPageSeo();
+            }
         } catch (ModelNotFoundException) {
             return new NotFoundPageSeo();
-        }
-
-        switch ($url->entity_class) {
-            case Url::CITY:
-                $city = $this->cityService->getOne($url->entity_id);
-                return new CityPageSeo($city);
-            case Url::MASTER:
-                $master = $this->masterService->getOne($url->entity_id);
-                return new MasterPageSeo($master);
-            case Url::SERVICE:
-                $service = $this->serviceService->getOne($url->entity_id);
-                return new ServicePageSeo($service);
-            default:
-                return new NotFoundPageSeo();
         }
     }
 }

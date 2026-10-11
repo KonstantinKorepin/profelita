@@ -79,7 +79,7 @@
                                             </div>
                                             <div class="list-block">
                                                 <ul>
-                                                    @foreach ($item['servicesList'] as $key => $serviceItem)
+                                                    @foreach ($item['servicesList'] ?? [] as $key => $serviceItem)
                                                         @if ($key >= 15)
                                                             <li class="tohide d-none">
                                                                 <a href="{{ $serviceItem->url }}">{{ $serviceItem->catalog_name }}</a>
