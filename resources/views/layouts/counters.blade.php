@@ -1,3 +1,4 @@
+@unless(app()->environment('local', 'testing'))
     <meta name="yandex-verification" content="b6d634eb9ec3d90a" />
 
     <!-- Yandex.Metrika counter -->
@@ -31,3 +32,4 @@
     </script>
 
     <script src="//code.jivo.ru/widget/DYnz3Bj0yQ" async></script>
+@endunless
