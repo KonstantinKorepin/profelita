@@ -36,7 +36,7 @@ RewriteRule ^(.*)$ https://profelita.ru/$1 [R=301,L]
 RewriteCond %{THE_REQUEST} ^.*/index\.php
 RewriteRule ^(.*)index.php$ https://profelita.ru/$1 [R=301,L]
 
-Redirect 301 /msk /
+Redirect 301 /msk https://profelita.ru/
 
 # Казань
 Redirect 301 /ustanovka-vanny-v-kazani /santexnik-kazan
