@@ -32,6 +32,7 @@ return [
     ],
 
     'recaptcha' => [
+        'site_key' => env('RECAPTCHA_CODE'),
         'secret' => env('RECAPTCHA_SECRET'),
         'min_score' => 0.5,
     ],

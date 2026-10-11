@@ -1,6 +1,7 @@
 {
     "private": true,
     "scripts": {
+        "test:forms": "node tests/js/email-form.test.cjs",
         "dev": "vite",
         "build": "vite build"
     },
